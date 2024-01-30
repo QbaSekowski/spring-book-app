@@ -9,8 +9,8 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Data;
 
-@Entity
 @Data
+@Entity
 @Table(name = "books")
 public class Book {
     @Id

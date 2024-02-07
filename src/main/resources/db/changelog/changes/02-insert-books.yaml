@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-book
+      author: JSekowski
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Book1"}
+              - column: { name: author, value: "Author1"}
+              - column: { name: isbn, value: "129-7-138-15431-1"}
+              - column: { name: price, value: 49.85}
+              - column: { name: description, value: "Description1"}
+              - column: { name: cover_image, value: "Image1"}
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Book2" }
+              - column: { name: author, value: "Author2" }
+              - column: { name: isbn, value: "245-1-871-23451-9" }
+              - column: { name: price, value: 21.90 }
+              - column: { name: description, value: "Description2" }
+              - column: { name: cover_image, value: "Image2" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Book3" }
+              - column: { name: author, value: "Author3" }
+              - column: { name: isbn, value: "456-8-476-49637-6" }
+              - column: { name: price, value: 40.99 }
+              - column: { name: description, value: "Description3" }
+              - column: { name: cover_image, value: "Image3" }

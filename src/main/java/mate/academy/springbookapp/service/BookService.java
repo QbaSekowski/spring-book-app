@@ -2,6 +2,7 @@ package mate.academy.springbookapp.service;
 
 import java.util.List;
 import mate.academy.springbookapp.dto.BookDto;
+import mate.academy.springbookapp.dto.BookSearchParametersDto;
 import mate.academy.springbookapp.dto.CreateBookRequestDto;
 
 public interface BookService {
@@ -14,4 +15,6 @@ public interface BookService {
     BookDto updateById(Long id, CreateBookRequestDto createBookRequestDto);
 
     void deleteById(Long id);
+
+    List<BookDto> search(BookSearchParametersDto bookSearchParametersDto);
 }

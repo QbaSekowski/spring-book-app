@@ -14,7 +14,6 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
     private static final String KEY_AUTHOR = "author";
     private static final String KEY_TITLE = "title";
     private static final String KEY_ISBN = "isbn";
-
     private final SpecificationProviderManager<Book> bookSpecificationProviderManager;
 
     @Override

@@ -11,13 +11,11 @@ import mate.academy.springbookapp.model.Book;
 import mate.academy.springbookapp.repository.book.BookRepository;
 import mate.academy.springbookapp.repository.book.BookSpecificationBuilder;
 import mate.academy.springbookapp.service.BookService;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class BookServiceImpl implements BookService {
-
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
@@ -60,9 +58,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> search(BookSearchParametersDto bookSearchParametersDto) {
-        Specification<Book> bookSpecification
-                = bookSpecificationBuilder.build(bookSearchParametersDto);
-        return bookRepository.findAll(bookSpecification)
+        return bookRepository.findAll(bookSpecificationBuilder.build(bookSearchParametersDto))
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();

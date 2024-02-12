@@ -8,11 +8,11 @@ import lombok.Data;
 
 @Data
 public class CreateBookRequestDto {
-    @NotBlank(message = "Title may not be blank")
+    @NotBlank(message = "title may not be blank")
     private String title;
-    @NotBlank(message = "Author may not be blank")
+    @NotBlank(message = "author may not be blank")
     private String author;
-    @NotBlank(message = "ISBN may not be blank")
+    @NotBlank(message = "isbn may not be blank")
     private String isbn;
     @NotNull
     @PositiveOrZero

@@ -1,5 +1,6 @@
 package mate.academy.springbookapp.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.BookDto;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/books")
 public class BookController {
-
     private final BookService bookService;
 
     @GetMapping
@@ -35,7 +35,8 @@ public class BookController {
     }
 
     @PostMapping
-    public BookDto createBook(@RequestBody CreateBookRequestDto createBookRequestDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto createBookRequestDto) {
         return bookService.save(createBookRequestDto);
     }
 

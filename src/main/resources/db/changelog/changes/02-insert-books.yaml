@@ -6,27 +6,90 @@ databaseChangeLog:
         - insert:
             tableName: books
             columns:
-              - column: { name: title, value: "Book1"}
-              - column: { name: author, value: "Author1"}
-              - column: { name: isbn, value: "129-7-138-15431-1"}
-              - column: { name: price, value: 49.85}
+              - column: { name: title, value: "Ogniem i mieczem"}
+              - column: { name: author, value: "Henryk Sienkiewicz"}
+              - column: { name: isbn, value: "978-83-779-1630-8"}
+              - column: { name: price, value: 43.50}
               - column: { name: description, value: "Description1"}
               - column: { name: cover_image, value: "Image1"}
         - insert:
             tableName: books
             columns:
-              - column: { name: title, value: "Book2" }
-              - column: { name: author, value: "Author2" }
-              - column: { name: isbn, value: "245-1-871-23451-9" }
-              - column: { name: price, value: 21.90 }
+              - column: { name: title, value: "Potop" }
+              - column: { name: author, value: "Henryk Sienkiewicz" }
+              - column: { name: isbn, value: "978-83-732-7225-5" }
+              - column: { name: price, value: 59.99 }
               - column: { name: description, value: "Description2" }
               - column: { name: cover_image, value: "Image2" }
         - insert:
             tableName: books
             columns:
-              - column: { name: title, value: "Book3" }
-              - column: { name: author, value: "Author3" }
-              - column: { name: isbn, value: "456-8-476-49637-6" }
-              - column: { name: price, value: 40.99 }
+              - column: { name: title, value: "Pan Wołodyjowski" }
+              - column: { name: author, value: "Henryk Sienkiewicz" }
+              - column: { name: isbn, value: "978-83-827-9568-4" }
+              - column: { name: price, value: 42.99 }
               - column: { name: description, value: "Description3" }
               - column: { name: cover_image, value: "Image3" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Gra o tron" }
+              - column: { name: author, value: "George R.R. Martin" }
+              - column: { name: isbn, value: "978-83-7506-729-3" }
+              - column: { name: price, value: 59.00 }
+              - column: { name: description, value: "Description4" }
+              - column: { name: cover_image, value: "Image4" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Wiedźmin. Ostatnie życzenie" }
+              - column: { name: author, value: "Andrzej Sapkowski" }
+              - column: { name: isbn, value: "978-83-7578-063-5" }
+              - column: { name: price, value: 46.20 }
+              - column: { name: description, value: "Description5" }
+              - column: { name: cover_image, value: "Image5" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Listy J.R.R. Tolkien" }
+              - column: { name: author, value: "J.R.R. Tolkien" }
+              - column: { name: isbn, value: "978-83-820-2760-0" }
+              - column: { name: price, value: 99.90 }
+              - column: { name: description, value: "Description6" }
+              - column: { name: cover_image, value: "Image6" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Ferdydurke" }
+              - column: { name: author, value: "Witold Gombrowicz" }
+              - column: { name: isbn, value: "978-83-080-8011-5" }
+              - column: { name: price, value: 39.90 }
+              - column: { name: description, value: "Description7" }
+              - column: { name: cover_image, value: "Image7" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Zabawy literackie" }
+              - column: { name: author, value: "Wisława Szymborska" }
+              - column: { name: isbn, value: "978-83-240-6742-8" }
+              - column: { name: price, value: 59.99 }
+              - column: { name: description, value: "Description8" }
+              - column: { name: cover_image, value: "Image8" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Historia literatury polskiej" }
+              - column: { name: author, value: "Czesław Miłosz" }
+              - column: { name: isbn, value: "978-83-240-1449-1" }
+              - column: { name: price, value: 59.90 }
+              - column: { name: description, value: "Description9" }
+              - column: { name: cover_image, value: "Image9" }
+        - insert:
+            tableName: books
+            columns:
+              - column: { name: title, value: "Lord Jim" }
+              - column: { name: author, value: "Joseph Conrad" }
+              - column: { name: isbn, value: "978-83-240-6401-4" }
+              - column: { name: price, value: 49.99 }
+              - column: { name: description, value: "Description10" }
+              - column: { name: cover_image, value: "Image10" }

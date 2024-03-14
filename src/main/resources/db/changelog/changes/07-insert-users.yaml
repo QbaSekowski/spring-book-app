@@ -6,40 +6,26 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: email, value: "aga123@gmail.com"}
-              - column: { name: password, value: "qwerty"}
-              - column: { name: first_name, value: "Agnieszka"}
-              - column: { name: last_name, value: "Kowalska"}
-              - column: { name: shipping_address, value: "Agnieszka's address"}
+              - column: { name: email, value: "admin@gmail.com"}
+              - column: { name: password, value: "$2a$10$qMpBYmqIiFchfEjzmwuw0u6RuTo3QQTfsJlvpJ32H5EHZEqXRNXP6"}
+              - column: { name: first_name, value: "Admin"}
+              - column: { name: last_name, value: "Administrator"}
+              - column: { name: shipping_address, value: "Admin's address"}
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, valueNumeric: 1 }
+              - column: { name: role_id, valueNumeric: 2 }
         - insert:
             tableName: users
             columns:
               - column: { name: email, value: "jurek@wp.pl" }
-              - column: { name: password, value: "asdfgh" }
+              - column: { name: password, value: "$2a$10$6/M/Eo5cO8c0QpVYrNeb4e55nHRvwDege3jQn3NRCgX7FHpFWeDfu" }
               - column: { name: first_name, value: "Jerzy" }
               - column: { name: last_name, value: "Nowak" }
               - column: { name: shipping_address, value: "Jerzy's address" }
         - insert:
-            tableName: users
+            tableName: users_roles
             columns:
-              - column: { name: email, value: "basia@wp.pl" }
-              - column: { name: password, value: "password123" }
-              - column: { name: first_name, value: "Barbara" }
-              - column: { name: last_name, value: "Chojnicka" }
-              - column: { name: shipping_address, value: "Barbara's address" }
-        - insert:
-            tableName: users
-            columns:
-              - column: { name: email, value: "andrzej@onet.pl" }
-              - column: { name: password, value: "moje_haslo" }
-              - column: { name: first_name, value: "Andrzej" }
-              - column: { name: last_name, value: "Pilarz" }
-              - column: { name: shipping_address, value: "Andrzej's address" }
-        - insert:
-            tableName: users
-            columns:
-              - column: { name: email, value: "zosia@wp.pl" }
-              - column: { name: password, value: "haslo-zosi" }
-              - column: { name: first_name, value: "Zofia" }
-              - column: { name: last_name, value: "Nowacka" }
-              - column: { name: shipping_address, value: "Zofia's address" }
+              - column: { name: user_id, valueNumeric: 2 }
+              - column: { name: role_id, valueNumeric: 1 }

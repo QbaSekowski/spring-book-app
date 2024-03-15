@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: insert-book
+      id: insert-books
       author: JSekowski
       changes:
         - insert:

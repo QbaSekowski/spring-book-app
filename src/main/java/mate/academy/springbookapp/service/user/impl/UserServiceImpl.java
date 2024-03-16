@@ -8,6 +8,7 @@ import mate.academy.springbookapp.mapper.UserMapper;
 import mate.academy.springbookapp.model.User;
 import mate.academy.springbookapp.repository.user.UserRepository;
 import mate.academy.springbookapp.service.user.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Can't register user with given email address");
         }
         User savedUser = userMapper.toModel(request);
+        savedUser.setPassword(passwordEncoder.encode(savedUser.getPassword()));
         return userMapper.toDto(userRepository.save(savedUser));
     }
 }

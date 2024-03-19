@@ -4,13 +4,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
@@ -18,7 +17,7 @@ public class JwtUtil {
     private long expiration;
     private Key secret;
 
-    public JwtUtil(@Value("${jwt.expiration}") String secretString) {
+    public JwtUtil(@Value("${jwt.secret}") String secretString) {
         secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -36,7 +35,7 @@ public class JwtUtil {
                 .setSigningKey(secret)
                 .build()
                 .parseClaimsJws(token);
-        return claimsJws.getBody().getExpiration().after(new Date());
+        return claimsJws.getBody().getExpiration().before(new Date());
     }
 
     public String getUsername(String token) {

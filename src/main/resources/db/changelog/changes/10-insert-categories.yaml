@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-categories
+      author: JSekowski
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Fantasy" }
+              - column: { name: "description",
+                          value: "Description of fantasy genre" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Poetry" }
+              - column: { name: "description",
+                          value: "Description of poetry genre" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Drama" }
+              - column: { name: "description",
+                          value: "Description of drama genre" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Biography" }
+              - column: { name: "description",
+                          value: "Description of biography genre" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Nonfiction" }
+              - column: { name: "description",
+                          value: "Description of nonfiction genre" }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: "name", value: "Historical" }
+              - column: { name: "description",
+                          value: "Description of historical genre" }

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.book.BookDto;
+import mate.academy.springbookapp.dto.book.BookDtoWithoutCategoryIds;
 import mate.academy.springbookapp.dto.book.BookSearchParametersDto;
 import mate.academy.springbookapp.dto.book.CreateBookRequestDto;
 import mate.academy.springbookapp.service.book.BookService;
@@ -62,9 +63,11 @@ public class BookController {
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Search books by parameters",
-            description = "Get a list of books by given parameters")
-    public List<BookDto> search(BookSearchParametersDto bookSearchParametersDto) {
-        return bookService.search(bookSearchParametersDto);
+            description = "Get a list of books by given parameters: "
+                    + "author, title, isbn")
+    public List<BookDtoWithoutCategoryIds> search(Pageable pageable,
+                                                  BookSearchParametersDto bookSearchParametersDto) {
+        return bookService.search(bookSearchParametersDto, pageable);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

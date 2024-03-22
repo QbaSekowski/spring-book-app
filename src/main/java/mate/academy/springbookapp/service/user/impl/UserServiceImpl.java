@@ -1,6 +1,5 @@
 package mate.academy.springbookapp.service.user.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.user.UserRegistrationRequestDto;
@@ -31,10 +30,7 @@ public class UserServiceImpl implements UserService {
         }
         User savedUser = userMapper.toModel(request);
         savedUser.setPassword(passwordEncoder.encode(savedUser.getPassword()));
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(Role.RoleName.USER);
-        roles.add(userRole);
-        savedUser.setRoles(roles);
+        savedUser.setRoles(Set.of(roleRepository.findByName(Role.RoleName.USER)));
         return userMapper.toDto(userRepository.save(savedUser));
     }
 }

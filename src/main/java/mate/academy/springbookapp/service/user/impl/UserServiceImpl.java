@@ -1,11 +1,14 @@
 package mate.academy.springbookapp.service.user.impl;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.user.UserRegistrationRequestDto;
 import mate.academy.springbookapp.dto.user.UserResponseDto;
 import mate.academy.springbookapp.exception.RegistrationException;
 import mate.academy.springbookapp.mapper.UserMapper;
+import mate.academy.springbookapp.model.Role;
 import mate.academy.springbookapp.model.User;
+import mate.academy.springbookapp.repository.role.RoleRepository;
 import mate.academy.springbookapp.repository.user.UserRepository;
 import mate.academy.springbookapp.service.user.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
         }
         User savedUser = userMapper.toModel(request);
         savedUser.setPassword(passwordEncoder.encode(savedUser.getPassword()));
+        savedUser.setRoles(Set.of(roleRepository.findByName(Role.RoleName.USER)));
         return userMapper.toDto(userRepository.save(savedUser));
     }
 }

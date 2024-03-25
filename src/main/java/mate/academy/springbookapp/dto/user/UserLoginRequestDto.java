@@ -10,6 +10,5 @@ public record UserLoginRequestDto(
         String email,
         @NotBlank(message = "password may not be blank")
         @Length(min = 8, max = 25)
-        String password
-) {
+        String password) {
 }

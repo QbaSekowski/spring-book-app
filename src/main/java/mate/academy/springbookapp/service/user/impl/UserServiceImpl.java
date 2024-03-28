@@ -7,10 +7,13 @@ import mate.academy.springbookapp.dto.user.UserResponseDto;
 import mate.academy.springbookapp.exception.RegistrationException;
 import mate.academy.springbookapp.mapper.UserMapper;
 import mate.academy.springbookapp.model.Role;
+import mate.academy.springbookapp.model.ShoppingCart;
 import mate.academy.springbookapp.model.User;
 import mate.academy.springbookapp.repository.role.RoleRepository;
+import mate.academy.springbookapp.repository.shoppingcart.ShoppingCartRepository;
 import mate.academy.springbookapp.repository.user.UserRepository;
 import mate.academy.springbookapp.service.user.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
@@ -28,9 +32,17 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new RegistrationException("Can't register user with given email address");
         }
-        User savedUser = userMapper.toModel(request);
-        savedUser.setPassword(passwordEncoder.encode(savedUser.getPassword()));
-        savedUser.setRoles(Set.of(roleRepository.findByName(Role.RoleName.USER)));
-        return userMapper.toDto(userRepository.save(savedUser));
+        User createdUser = userMapper.toModel(request);
+        createdUser.setPassword(passwordEncoder.encode(createdUser.getPassword()));
+        createdUser.setRoles(Set.of(roleRepository.findByName(Role.RoleName.USER)));
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(createdUser);
+        shoppingCartRepository.save(shoppingCart);
+        return userMapper.toDto(userRepository.save(createdUser));
+    }
+
+    @Override
+    public User getUserFromAuthentication(Authentication authentication) {
+        return (User) authentication.getPrincipal();
     }
 }

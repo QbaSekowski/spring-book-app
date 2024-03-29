@@ -1,5 +1,6 @@
 package mate.academy.springbookapp.service.shoppingcart.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.cartitem.CartItemDto;
 import mate.academy.springbookapp.dto.cartitem.CreateCartItemRequestDto;
@@ -31,8 +32,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto addItemToCart(Long userId,
                                              CreateCartItemRequestDto createCartItemRequestDto) {
-        CartItem modelCartItem = cartItemMapper.toModel(createCartItemRequestDto);
         ShoppingCart modelCart = shoppingCartRepository.findCartWithItemsByUserId(userId);
+        CartItem modelCartItem = cartItemMapper.toModel(createCartItemRequestDto);
+        Optional<CartItem> existingItem = modelCart.getCartItems().stream()
+                .filter(ci -> ci.getBook().getId().equals(modelCartItem.getBook().getId()))
+                .findFirst();
+        if (existingItem.isPresent()) {
+            CartItem cartItem = existingItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + modelCartItem.getQuantity());
+            cartItemRepository.save(cartItem);
+            return shoppingCartMapper.toDto(modelCart);
+        }
         modelCartItem.setShoppingCart(modelCart);
         modelCart.getCartItems().add(modelCartItem);
         return shoppingCartMapper.toDto(shoppingCartRepository.save(modelCart));

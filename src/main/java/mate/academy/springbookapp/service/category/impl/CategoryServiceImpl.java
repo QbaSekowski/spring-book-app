@@ -1,7 +1,7 @@
 package mate.academy.springbookapp.service.category.impl;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.category.CategoryDto;
 import mate.academy.springbookapp.dto.category.CreateCategoryRequestDto;
 import mate.academy.springbookapp.exception.EntityNotFoundException;
@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;

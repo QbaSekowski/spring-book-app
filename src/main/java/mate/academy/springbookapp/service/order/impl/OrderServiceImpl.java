@@ -9,6 +9,7 @@ import mate.academy.springbookapp.dto.order.OrderDto;
 import mate.academy.springbookapp.dto.order.PlaceOrderRequestDto;
 import mate.academy.springbookapp.dto.order.UpdateStatusRequestDto;
 import mate.academy.springbookapp.dto.orderitem.OrderItemDto;
+import mate.academy.springbookapp.exception.AccessDeniedException;
 import mate.academy.springbookapp.exception.EntityNotFoundException;
 import mate.academy.springbookapp.mapper.OrderItemMapper;
 import mate.academy.springbookapp.mapper.OrderMapper;
@@ -40,11 +41,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderItemDto> getAllItemsFromOrder(Long userId, Long orderId) {
-        Order modelOrder = orderRepository.findByIdWithItems(orderId).orElseThrow(
-                () -> new EntityNotFoundException("Can't find order with id: " + orderId));
-        if (!modelOrder.getUser().getId().equals(userId)) {
-            return null;
-        }
+        Order modelOrder = createModelOrder(orderId, userId);
         return modelOrder.getOrderItems().stream()
                 .map(orderItemMapper::toDto)
                 .toList();
@@ -52,11 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderItemDto getItemFromOrder(Long userId, Long orderId, Long itemId) {
-        Order modelOrder = orderRepository.findByIdWithItems(orderId).orElseThrow(
-                () -> new EntityNotFoundException("Can't find order with id: " + orderId));
-        if (!modelOrder.getUser().getId().equals(userId)) {
-            return null;
-        }
+        Order modelOrder = createModelOrder(orderId, userId);
         OrderItem modelItem = modelOrder.getOrderItems().stream()
                 .filter(oi -> oi.getId().equals(itemId))
                 .findFirst()
@@ -88,7 +81,16 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderStatus(Long orderId, UpdateStatusRequestDto requestDto) {
         Order modelOrder = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with id: " + orderId));
-        modelOrder.setStatus(Order.Status.valueOf(requestDto.status()));
+        modelOrder.setStatus(Order.Status.valueOf(requestDto.status().toString()));
         orderRepository.save(modelOrder);
+    }
+
+    private Order createModelOrder(Long orderId, Long userId) {
+        Order modelOrder = orderRepository.findById(orderId).orElseThrow(
+                () -> new EntityNotFoundException("Can't find order with id: " + orderId));
+        if (!modelOrder.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You are not authorized to access this order");
+        }
+        return modelOrder;
     }
 }

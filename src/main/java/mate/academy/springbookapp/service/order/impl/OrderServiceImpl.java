@@ -60,19 +60,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto placeOrder(User user, PlaceOrderRequestDto requestDto) {
-        Order order = new Order();
-        order.setUser(user);
-        order.setShippingAddress(requestDto.shippingAddress());
         ShoppingCart modelCart = shoppingCartRepository.findCartWithItemsByUserId(user.getId());
         Set<OrderItem> orderItems = modelCart.getCartItems().stream()
                 .map(orderItemMapper::toOrderItemFromCartItem)
                 .collect(Collectors.toSet());
-        orderItems.forEach(oi -> oi.setOrder(order));
-        order.setOrderItems(orderItems);
         BigDecimal total = modelCart.getCartItems().stream()
                 .map(ci -> ci.getBook().getPrice().multiply(BigDecimal.valueOf(ci.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        order.setTotal(total);
+        Order order = Order.builder()
+                .user(user)
+                .shippingAddress(requestDto.shippingAddress())
+                .orderItems(orderItems)
+                .total(total)
+                .build();
         cartItemRepository.deleteAllByCartId(modelCart.getId());
         return orderMapper.toDto(orderRepository.save(order));
     }

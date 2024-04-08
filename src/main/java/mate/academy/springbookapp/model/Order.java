@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -30,7 +30,7 @@ import org.hibernate.annotations.Where;
 @Builder
 @Table(name = "orders")
 @SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted=false")
+@SQLRestriction("is_deleted=false")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

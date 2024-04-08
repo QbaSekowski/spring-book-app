@@ -12,14 +12,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted=false")
 @SQLDelete(sql = "UPDATE cart_items SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted=false")
 @Table(name = "cart_items")
 public class CartItem {
     @Id

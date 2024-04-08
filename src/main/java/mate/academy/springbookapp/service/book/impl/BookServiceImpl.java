@@ -1,7 +1,7 @@
 package mate.academy.springbookapp.service.book.impl;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import mate.academy.springbookapp.dto.book.BookDto;
 import mate.academy.springbookapp.dto.book.BookDtoWithoutCategoryIds;
 import mate.academy.springbookapp.dto.book.BookSearchParametersDto;
@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;

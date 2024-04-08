@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,22 +19,24 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @Setter
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE cart_items SET is_deleted = true WHERE id=?")
+@Table(name = "order_items")
+@SQLDelete(sql = "UPDATE order_items SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted=false")
-@Table(name = "cart_items")
-public class CartItem {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "shopping_cart_id", nullable = false)
-    private ShoppingCart shoppingCart;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
     @Column(name = "quantity", nullable = false)
     private int quantity;
-    @Column(name = "is_deleted")
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 }

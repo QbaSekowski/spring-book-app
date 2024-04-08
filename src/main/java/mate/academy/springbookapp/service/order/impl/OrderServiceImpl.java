@@ -22,6 +22,7 @@ import mate.academy.springbookapp.repository.order.OrderRepository;
 import mate.academy.springbookapp.repository.shoppingcart.ShoppingCartRepository;
 import mate.academy.springbookapp.service.order.OrderService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto placeOrder(User user, PlaceOrderRequestDto requestDto) {
         ShoppingCart modelCart = shoppingCartRepository.findCartWithItemsByUserId(user.getId());
         Set<OrderItem> orderItems = modelCart.getCartItems().stream()

@@ -61,4 +61,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .status(HttpStatus.NOT_FOUND)
                 .body(exceptionResponse);
     }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    protected ResponseEntity<Object> handleAccessDeniedException(
+            AccessDeniedException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(exceptionResponse);
+    }
 }

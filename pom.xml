@@ -115,6 +115,7 @@
     </dependencies>
 
     <build>
+        <finalName>spring-book-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.liquibase</groupId>

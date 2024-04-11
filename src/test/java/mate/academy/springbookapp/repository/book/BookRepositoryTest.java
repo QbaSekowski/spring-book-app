@@ -25,8 +25,7 @@ public class BookRepositoryTest {
     @Sql(scripts = {"classpath:database/books/remove-all-books-with-categories.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllByCategoryId_ValidCategoryId_ReturnsTwoBooks() {
-        Long correctCategoryId = 1L;
-        List<Book> actual = bookRepository.findAllByCategoryId(correctCategoryId,
+        List<Book> actual = bookRepository.findAllByCategoryId(1L,
                         PageRequest.of(0, 10))
                 .stream()
                 .toList();

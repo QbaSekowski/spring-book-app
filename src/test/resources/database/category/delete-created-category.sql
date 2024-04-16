@@ -1,0 +1,1 @@
+DELETE FROM categories WHERE name = 'Comedy' AND description = 'Comedy category';

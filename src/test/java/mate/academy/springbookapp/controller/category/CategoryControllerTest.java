@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +40,10 @@ import org.springframework.web.context.WebApplicationContext;
 public class CategoryControllerTest {
     protected static MockMvc mockMvc;
     private static final String BASE_ENDPOINT = "/api/categories";
+    private static final String DB_PATH_ADD_THREE_CATEGORIES
+            = "database/category/add-three-categories.sql";
+    private static final String DB_PATH_DELETE_THREE_CATEGORIES
+            = "database/category/delete-three-categories.sql";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -48,34 +51,26 @@ public class CategoryControllerTest {
     @BeforeAll
     static void beforeAll(
             @Autowired DataSource dataSource,
-            @Autowired WebApplicationContext applicationContext) throws SQLException {
+            @Autowired WebApplicationContext applicationContext) {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        teardown(dataSource);
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource(
-                            "database/category/add-three-categories.sql"));
-        }
+        init(dataSource, DB_PATH_ADD_THREE_CATEGORIES);
     }
 
     @AfterAll
     static void afterAll(@Autowired DataSource dataSource) {
-        teardown(dataSource);
+        init(dataSource, DB_PATH_DELETE_THREE_CATEGORIES);
     }
 
     @SneakyThrows
-    static void teardown(DataSource dataSource) {
+    static void init(DataSource dataSource, String dbPath) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource(
-                            "database/category/delete-three-categories.sql"));
+                    new ClassPathResource(dbPath));
         }
     }
 

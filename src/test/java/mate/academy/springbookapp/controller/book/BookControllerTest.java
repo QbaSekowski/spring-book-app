@@ -58,16 +58,16 @@ public class BookControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        init(dataSource, DB_PATH_ADD_THREE_BOOKS_WITH_CATEGORIES);
+        executeSqlScript(dataSource, DB_PATH_ADD_THREE_BOOKS_WITH_CATEGORIES);
     }
 
     @AfterAll
     static void afterAll(@Autowired DataSource dataSource) {
-        init(dataSource, DB_PATH_REMOVE_ALL_BOOKS_WITH_CATEGORIES);
+        executeSqlScript(dataSource, DB_PATH_REMOVE_ALL_BOOKS_WITH_CATEGORIES);
     }
 
     @SneakyThrows
-    static void init(DataSource dataSource, String dbPath) {
+    static void executeSqlScript(DataSource dataSource, String dbPath) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(

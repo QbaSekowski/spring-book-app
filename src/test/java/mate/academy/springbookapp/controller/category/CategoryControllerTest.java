@@ -56,16 +56,16 @@ public class CategoryControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        init(dataSource, DB_PATH_ADD_THREE_CATEGORIES);
+        executeSqlScript(dataSource, DB_PATH_ADD_THREE_CATEGORIES);
     }
 
     @AfterAll
     static void afterAll(@Autowired DataSource dataSource) {
-        init(dataSource, DB_PATH_DELETE_THREE_CATEGORIES);
+        executeSqlScript(dataSource, DB_PATH_DELETE_THREE_CATEGORIES);
     }
 
     @SneakyThrows
-    static void init(DataSource dataSource, String dbPath) {
+    static void executeSqlScript(DataSource dataSource, String dbPath) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(

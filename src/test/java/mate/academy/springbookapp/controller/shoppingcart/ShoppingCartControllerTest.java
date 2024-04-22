@@ -1,13 +1,14 @@
 package mate.academy.springbookapp.controller.shoppingcart;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashSet;
@@ -16,7 +17,13 @@ import javax.sql.DataSource;
 import lombok.SneakyThrows;
 import mate.academy.springbookapp.dto.cartitem.CartItemDto;
 import mate.academy.springbookapp.dto.cartitem.UpdateCartItemRequestDto;
-import mate.academy.springbookapp.model.*;
+import mate.academy.springbookapp.dto.shoppingcart.ShoppingCartDto;
+import mate.academy.springbookapp.model.Book;
+import mate.academy.springbookapp.model.CartItem;
+import mate.academy.springbookapp.model.Category;
+import mate.academy.springbookapp.model.Role;
+import mate.academy.springbookapp.model.ShoppingCart;
+import mate.academy.springbookapp.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -85,6 +93,22 @@ public class ShoppingCartControllerTest {
                 .andReturn();
     }
 
+    @WithUserDetails(USER_EMAIL)
+    @Test
+    void getCartWithItems_ValidUser_ReturnsShoppingCartDto() throws Exception {
+        long validUserId = 1L;
+        ShoppingCart modelCart = getTestShoppingCart(validUserId);
+        ShoppingCartDto expected = getTestShoppingCartDtoFromModel(modelCart);
+        MvcResult result = mockMvc.perform(
+                        get(BASE_ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        ShoppingCartDto actual = objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(), ShoppingCartDto.class);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     @Sql(scripts = {"classpath:database/shoppingcart/delete_shopping_cart.sql",
@@ -113,6 +137,23 @@ public class ShoppingCartControllerTest {
                 result.getResponse().getContentAsByteArray(), CartItemDto.class);
         assertNotNull(actual.id());
         EqualsBuilder.reflectionEquals(expected, actual, "id");
+    }
+
+    private ShoppingCartDto getTestShoppingCartDtoFromModel(ShoppingCart shoppingCart) {
+        Set<CartItem> cartItems = shoppingCart.getCartItems();
+        Set<CartItemDto> cartItemDtoSet = new HashSet<>();
+        for (CartItem item : cartItems) {
+            cartItemDtoSet.add(
+                    new CartItemDto(
+                            item.getId(),
+                            item.getBook().getId(),
+                            item.getBook().getTitle(),
+                            item.getQuantity()));
+        }
+        return new ShoppingCartDto(
+                shoppingCart.getId(),
+                shoppingCart.getUser().getId(),
+                cartItemDtoSet);
     }
 
     private ShoppingCart getTestShoppingCart(long userId) {

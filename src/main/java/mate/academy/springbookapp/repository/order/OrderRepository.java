@@ -3,15 +3,21 @@ package mate.academy.springbookapp.repository.order;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.springbookapp.model.Order;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @EntityGraph(attributePaths = {"orderItems", "user"})
+    @Query("from Order o "
+            + "left join fetch o.orderItems "
+            + "join fetch o.user u "
+            + "where u.id = :userId")
     List<Order> findAllByUserId(Long userId);
 
-    @EntityGraph(attributePaths = {"orderItems", "user"})
-    Optional<Order> findById(Long orderId);
+    @Query("from Order o "
+            + "left join fetch o.orderItems "
+            + "join fetch o.user u "
+            + "where o.id = :orderId")
+    Optional<Order> findByIdWithItems(Long orderId);
 }

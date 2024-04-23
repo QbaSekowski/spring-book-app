@@ -81,14 +81,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateOrderStatus(Long orderId, UpdateStatusRequestDto requestDto) {
-        Order modelOrder = orderRepository.findById(orderId).orElseThrow(
+        Order modelOrder = orderRepository.findByIdWithItems(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with id: " + orderId));
         modelOrder.setStatus(Order.Status.valueOf(requestDto.status().toString()));
         orderRepository.save(modelOrder);
     }
 
     private Order createModelOrder(Long orderId, Long userId) {
-        Order modelOrder = orderRepository.findById(orderId).orElseThrow(
+        Order modelOrder = orderRepository.findByIdWithItems(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with id: " + orderId));
         if (!modelOrder.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You are not authorized to access this order");

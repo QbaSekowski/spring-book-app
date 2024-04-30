@@ -106,8 +106,12 @@ Below is a representation of the database used in the project:
 
 ![bookstore-db-diagram](bookstore-db-diagram.png)
 
+## Video Presentation
+CORRECT THE VIDEO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+For a visual demonstration of how the Bookstore API works and its various functionalities, you can watch the video presentation available [here](https://www.loom.com/share/).
+
 ## How to run Book Store API
-1. Install [Docker](https://www.docker.com/products/docker-desktop/)
+1. Download and install [Docker](https://www.docker.com/products/docker-desktop/), [Maven](https://maven.apache.org/download.cgi), [JDK Development Kit](https://www.oracle.com/pl/java/technologies/downloads/)
 2. Clone the project [git repository](https://github.com/QbaSekowski/spring-book-app.git)
 3. In the .env file you should provide necessary DB and Docker variables, here is an example:
 ```mysql
@@ -121,21 +125,12 @@ SPRING_DOCKER_PORT=8080
 DEBUG_PORT=5005
 ```
 4. Run the command `mvn clean package`
-5. Use `docker-compose build` to build Docker container
-6. Use `docker-compose up` to run Docker container
+5. Use `docker-compose build` to build Docker container.
+6. Use `docker-compose up` to run Docker container.
 7. Access the locally running application at http://localhost:8088/api
-   Feel free to test my application using Postman/Swagger.  
-   **Postman**: Keep in mind that you have to pass Authorization (Bearer Token) that you receive when logging in.  
-   Do you want to test admin features? Here are credentials of sample admin:
-   ```json
-   {
-   "email": "admin@gmail.com",
-   "password": "12345678"
-   }
-   ```
 8. To stop and remove containers use `docker-compose down`
 
-## Possible Improvements
+## Possible Improvement
 
 ### Payment Integration
 Incorporating a payment system, likely utilizing the Stripe API, to enable secure and convenient online payments. This will allow users to effortlessly complete their orders and make purchases directly within the application.

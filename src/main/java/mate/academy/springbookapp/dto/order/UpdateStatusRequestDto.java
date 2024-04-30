@@ -5,5 +5,5 @@ import mate.academy.springbookapp.model.Order;
 
 public record UpdateStatusRequestDto(
         @NotBlank
-        Order.Status status) {
+        String status) {
 }

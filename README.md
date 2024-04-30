@@ -107,12 +107,12 @@ Below is a representation of the database used in the project:
 ![bookstore-db-diagram](bookstore-db-diagram.png)
 
 ## Video Presentation
-CORRECT THE VIDEO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-For a visual demonstration of how the Bookstore API works and its various functionalities, you can watch the video presentation available [here](https://www.loom.com/share/).
+
+For a visual demonstration of how the Bookstore API works and its various functionalities, you can watch the video presentation available [here](https://www.loom.com/share/d78e0aa910ba43f188563fdda338b87a).
 
 ## How to run Book Store API
-1. Download and install [Docker](https://www.docker.com/products/docker-desktop/), [Maven](https://maven.apache.org/download.cgi), [JDK Development Kit](https://www.oracle.com/pl/java/technologies/downloads/)
-2. Clone the project [git repository](https://github.com/QbaSekowski/spring-book-app.git)
+1. Download and install [Docker](https://www.docker.com/products/docker-desktop/), [Maven](https://maven.apache.org/download.cgi), [JDK Development Kit](https://www.oracle.com/pl/java/technologies/downloads/).
+2. Clone the project [git repository](https://github.com/QbaSekowski/spring-book-app.git).
 3. In the .env file you should provide necessary DB and Docker variables, here is an example:
 ```mysql
 MYSQLDB_USER=root  

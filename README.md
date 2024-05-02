@@ -124,11 +124,26 @@ SPRING_LOCAL_PORT=8088
 SPRING_DOCKER_PORT=8080  
 DEBUG_PORT=5005
 ```
-4. Run the command `mvn clean package`
+4. Run the command `mvn clean package`.
 5. Use `docker-compose build` to build Docker container.
 6. Use `docker-compose up` to run Docker container.
-7. Access the locally running application at http://localhost:8088/api
-8. To stop and remove containers use `docker-compose down`
+7. Access the locally running application at http://localhost:8088/api.
+   Feel free to test my application using Postman/Swagger.  
+   **Postman**: Keep in mind that you have to pass Authorization (Bearer Token) that you receive when logging in.  
+   Do you want to test admin features? Here are credentials of sample admin:
+   ```json
+   {
+   "email": "admin@gmail.com",
+   "password": "12345678"
+   }
+   ```
+   or perhaps standard user features:
+8. ```json
+   {
+   "email": "jurek@wp.pl",
+   "password": "qwertyui"
+   }
+8. To stop and remove containers use `docker-compose down`.
 
 ## Possible Improvement
 

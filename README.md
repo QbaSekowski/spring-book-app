@@ -138,7 +138,7 @@ DEBUG_PORT=5005
    }
    ```
    or perhaps standard user features:
-8. ```json
+   ```json
    {
    "email": "jurek@wp.pl",
    "password": "qwertyui"

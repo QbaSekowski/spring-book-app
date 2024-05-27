@@ -1,8 +1,8 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changes/01-create-books-table.yaml
-  #- include:
-  #    file: db/changelog/changes/02-insert-books.yaml
+  - include:
+      file: db/changelog/changes/02-insert-books.yaml
   - include:
       file: db/changelog/changes/03-create-roles-table.yaml
   - include:
@@ -17,10 +17,10 @@ databaseChangeLog:
       file: db/changelog/changes/08-create-categories-table.yaml
   - include:
       file: db/changelog/changes/09-create-books-categories-table.yaml
-  #- include:
-  #    file: db/changelog/changes/10-insert-categories.yaml
-  #- include:
-  #    file: db/changelog/changes/11-insert-books-categories.yaml
+  - include:
+      file: db/changelog/changes/10-insert-categories.yaml
+  - include:
+      file: db/changelog/changes/11-insert-books-categories.yaml
   - include:
       file: /db/changelog/changes/12-create-shopping-carts-table.yaml
   - include:

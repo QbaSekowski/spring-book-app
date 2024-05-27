@@ -32,13 +32,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        if (userRepository.findByEmail(requestDto.email()).isPresent()) {
+        if (userRepository.findUserByEmail(requestDto.email()).isPresent()) {
             throw new RegistrationException(
                     "Can't register user - user with this email already exists!");
         }
         User modelUser = userMapper.toModel(requestDto);
         modelUser.setPassword(passwordEncoder.encode(requestDto.password()));
-        Role defaultRole = roleRepository.findByName(DEFAULT_ROLE_NAME)
+        Role defaultRole = roleRepository.findRoleByName(DEFAULT_ROLE_NAME)
                 .orElseThrow(() -> new RegistrationException("Can't find default role"));
         modelUser.setRoles(Set.of(defaultRole));
         ShoppingCart shoppingCart = new ShoppingCart();

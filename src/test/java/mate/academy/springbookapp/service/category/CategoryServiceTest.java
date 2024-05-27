@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.service.category;
+package mate.academy.springbookapp.service.category;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -119,4 +119,3 @@ public class CategoryServiceTest {
         return new CreateCategoryRequestDto(CATEGORY_NAME, CATEGORY_DESCRIPTION);
     }
 }
-*/

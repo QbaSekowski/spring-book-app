@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.config;
+package mate.academy.springbookapp.config;
 
 import org.testcontainers.containers.MySQLContainer;
 
@@ -29,4 +29,3 @@ public class CustomMySqlContainer extends MySQLContainer<CustomMySqlContainer> {
     public void stop() {
     }
 }
-*/

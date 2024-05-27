@@ -29,13 +29,12 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
         parametersMap.put(KEY_PRICE,
                 new String[]{bookSearchParametersDto.minPrice(),
                         bookSearchParametersDto.maxPrice()});
-
         for (Map.Entry<String, String[]> entry : parametersMap.entrySet()) {
-            String[] paramValues = entry.getValue();
-            if (paramValues != null && paramValues.length > 0) {
+            String[] parameterValues = entry.getValue();
+            if (parameterValues != null && parameterValues.length > 0) {
                 specification = specification.and(
                         bookSpecificationProviderManager.getSpecificationProvider(entry.getKey())
-                                .getSpecification(paramValues));
+                                .getSpecification(parameterValues));
             }
         }
         return specification;

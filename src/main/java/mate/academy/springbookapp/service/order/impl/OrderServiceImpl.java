@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getAllOrders(Long userId) {
-        return orderRepository.findAllByUserId(userId).stream()
+        return orderRepository.findAllOrdersByUserId(userId).stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
@@ -77,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(ci -> ci.getBook().getPrice().multiply(BigDecimal.valueOf(ci.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotal(total);
-        cartItemRepository.deleteAllByCartId(modelCart.getId());
+        cartItemRepository.deleteAllItemsByCartId(modelCart.getId());
         return orderMapper.toDto(orderRepository.save(order));
     }
 
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order createModelOrder(Long orderId, Long userId) {
-        Order modelOrder = orderRepository.findByIdWithItems(orderId).orElseThrow(
+        Order modelOrder = orderRepository.findOrderByIdWithItems(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with id: " + orderId));
         if (!modelOrder.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You are not authorized to access this order");

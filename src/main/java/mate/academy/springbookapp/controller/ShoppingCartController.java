@@ -33,8 +33,8 @@ public class ShoppingCartController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get the shopping cart with all cart items",
-            description = "Get the shopping cart with all cart items of the authenticated user")
+    @Operation(summary = "Get the shopping cart with all cart items it contains",
+            description = "Get the shopping cart with all cart items it contains")
     public ShoppingCartDto getCartWithItems(Authentication authentication) {
         return shoppingCartService.getCartWithItems(
                 userService.getUserFromAuthentication(authentication).getId());
@@ -44,7 +44,7 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Add a cart item to the shopping cart",
-            description = "Add a cart item to the shopping cart of the authenticated user")
+            description = "Add a cart item to the shopping cart")
     public ShoppingCartDto addItemToCart(Authentication authentication,
                                              @RequestBody @Valid
                                              CreateCartItemRequestDto createCartItemRequestDto) {
@@ -56,8 +56,7 @@ public class ShoppingCartController {
     @PutMapping("/cart-item/{cartItemId}")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Update cart item's quantity in the shopping cart",
-            description = "Update cart item's quantity "
-                    + "in the shopping cart of the authenticated user")
+            description = "Update cart item's quantity in the shopping cart")
     public CartItemDto updateItemQuantity(@RequestBody @Valid
                                               UpdateCartItemRequestDto updateCartItemRequestDto,
                                                     @PathVariable Long cartItemId) {
@@ -68,7 +67,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a cart item in the shopping cart",
-            description = "Delete a cart item in the shopping cart of the authenticated user")
+            description = "Delete a cart item in the shopping cart")
     public void deleteItemFromCart(@PathVariable Long cartItemId) {
         shoppingCartService.deleteItemFromCart(cartItemId);
     }

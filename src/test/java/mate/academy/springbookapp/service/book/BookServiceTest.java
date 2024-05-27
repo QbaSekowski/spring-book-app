@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.service.book;
+package mate.academy.springbookapp.service.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -224,7 +224,7 @@ public class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(modelBook, modelBook2);
         PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
-        when(bookRepository.findAllByCategoryId(validCategoryId, pageable)).thenReturn(booksPage);
+        when(bookRepository.findAllBooksHavingCategoryById(validCategoryId, pageable)).thenReturn(booksPage);
         when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(bookDto);
         when(bookMapper.toDtoWithoutCategories(modelBook2)).thenReturn(bookDto2);
         List<BookDtoWithoutCategoryIds> expected = List.of(bookDto, bookDto2);
@@ -232,7 +232,7 @@ public class BookServiceTest {
                 bookService.findAllByCategoryId(validCategoryId, pageable);
         assertEquals(2, actual.size());
         assertEquals(expected, actual);
-        verify(bookRepository, times(1)).findAllByCategoryId(any(), eq(pageable));
+        verify(bookRepository, times(1)).findAllBooksHavingCategoryById(any(), eq(pageable));
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
@@ -244,11 +244,11 @@ public class BookServiceTest {
         Book modelBook = createTestBook(validId, "66565-878787",
                 new BigDecimal("11.70"), Set.of(1L));
         BookDto expected = createTestBookDto(modelBook);
-        when(bookRepository.findByIdWithCategories(validId)).thenReturn(Optional.of(modelBook));
+        when(bookRepository.findBookByIdHavingCategories(validId)).thenReturn(Optional.of(modelBook));
         when(bookMapper.toDto(modelBook)).thenReturn(expected);
         BookDto actual = bookService.findByIdWithCategories(validId);
         assertEquals(expected, actual);
-        verify(bookRepository, times(1)).findByIdWithCategories(any());
+        verify(bookRepository, times(1)).findBookByIdHavingCategories(any());
         verify(bookMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
@@ -257,14 +257,14 @@ public class BookServiceTest {
     @DisplayName("Find book by ID with categories by invalid ID - Throws EntityNotFoundException")
     void findByIdWithCategories_InvalidId_ThrowsEntityNotFoundException() {
         Long invalidId = 10L;
-        when(bookRepository.findByIdWithCategories(invalidId)).thenReturn(Optional.empty());
+        when(bookRepository.findBookByIdHavingCategories(invalidId)).thenReturn(Optional.empty());
         String expected = "Can't find book by id: " + invalidId;
         EntityNotFoundException exception = assertThrows(
                 EntityNotFoundException.class,
                 () -> bookService.findByIdWithCategories(invalidId));
         String actual = exception.getMessage();
         assertEquals(expected, actual);
-        verify(bookRepository, times(1)).findByIdWithCategories(any());
+        verify(bookRepository, times(1)).findBookByIdHavingCategories(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -278,14 +278,14 @@ public class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(modelBook, modelBook2);
         PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
-        when(bookRepository.findAllWithCategories(pageable)).thenReturn(booksPage);
+        when(bookRepository.findAllBooksHavingCategories(pageable)).thenReturn(booksPage);
         when(bookMapper.toDto(modelBook)).thenReturn(bookDto);
         when(bookMapper.toDto(modelBook2)).thenReturn(bookDto2);
         List<BookDto> expected = List.of(bookDto, bookDto2);
         List<BookDto> actual = bookService.findAllWithCategories(pageable);
         assertEquals(2, actual.size());
         assertEquals(expected, actual);
-        verify(bookRepository, times(1)).findAllWithCategories(pageable);
+        verify(bookRepository, times(1)).findAllBooksHavingCategories(pageable);
         verify(bookMapper, times(2)).toDto(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
@@ -344,4 +344,4 @@ public class BookServiceTest {
                 categoryIds);
     }
 }
-*/
+

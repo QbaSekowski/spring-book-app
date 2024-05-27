@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
     @Query("UPDATE CartItem ci SET ci.isDeleted = TRUE WHERE ci.shoppingCart.id = :cartId")
-    void deleteAllByCartId(Long cartId);
+    void deleteAllItemsByCartId(Long cartId);
 }

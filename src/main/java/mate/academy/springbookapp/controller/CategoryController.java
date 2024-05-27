@@ -74,7 +74,7 @@ public class CategoryController {
     @GetMapping("/{id}/books")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Get books by category ID",
-            description = "Get a list of books from a specific category")
+            description = "Get a list of books from a category with specific ID")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id,
                                                                 Pageable pageable) {
         return bookService.findAllByCategoryId(id, pageable);

@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.controller.book;
+package mate.academy.springbookapp.controller.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -262,4 +262,3 @@ public class BookControllerTest {
                 requestDto.categoryIds());
     }
 }
-*/

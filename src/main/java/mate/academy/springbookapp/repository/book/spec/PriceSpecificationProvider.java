@@ -8,22 +8,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PriceSpecificationProvider implements SpecificationProvider<Book> {
-    private static final String FIELD_NAME = "price";
+    private static final String PRICE_TAG = "price";
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
-        BigDecimal minPrice = params[0] != null
-                ? new BigDecimal(params[0])
+        BigDecimal minPrice = params[0] != null ? new BigDecimal(params[0])
                 : BigDecimal.ZERO;
-        BigDecimal maxPrice = params[1] != null
-                ? new BigDecimal(params[1])
+        BigDecimal maxPrice = params[1] != null ? new BigDecimal(params[1])
                 : BigDecimal.valueOf(Double.MAX_VALUE);
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.between(root.get(FIELD_NAME), minPrice, maxPrice);
+                criteriaBuilder.between(root.get(PRICE_TAG), minPrice, maxPrice);
     }
 
     @Override
     public String getKey() {
-        return FIELD_NAME;
+        return PRICE_TAG;
     }
 }

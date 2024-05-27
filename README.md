@@ -1,105 +1,78 @@
 ![book-store-logo](book-store-logo.jpg)
 
-📚 The "Book Store" project is an online platform for book enthusiasts. Users have the ability to browse a wide range of books across various genres, explore their descriptions, learn about authors, and discover prices.
+📚 The "Book Store" project is an online platform designed for book enthusiasts. Users can browse an extensive selection of books in various genres, read descriptions, learn about authors and find prices.
 
-The service offers a convenient search for books by categories to provide quick access to literary works. Each user can create a personal account, track purchase history. Adding books to the cart and completing orders is done easily and efficiently, providing customers with a convenient and secure way to purchase their selected literature.
+The service includes a convenient book search by categories for quick access to literary works. Users can create personal accounts to track their purchase history. Adding books to the cart and completing orders is straightforward and secure, providing a hassle-free shopping experience.
+## Technologies Used in the project
 
-## Technologies Used
+- **Java**: A versatile programming language serving as the core foundation for developing the project.
+- **Spring Boot**: A framework designed to simplify the creation of production-ready, standalone Java applications.
+- **Spring Security**: A powerful security framework providing comprehensive authentication and authorization solutions.
+- **JWT** (JSON Web Token): A compact and self-contained method for securely transmitting information between parties as a JSON object.
+- **Spring Data JPA**: A data access framework that streamlines database operations by eliminating boilerplate code.
+- **Mapstruct**: A code generator that facilitates the mapping between Data Transfer Objects (DTOs) and entities.
+- **Lombok**: A Java library that reduces boilerplate code, enhancing code readability and maintainability.
+- **Maven**: A build automation tool that manages project dependencies and streamlines the build process.
+- **Liquibase**: A version control system for database changes, ensuring consistency across environments.
+- **Jackson**: A library that enables efficient JSON parsing and generation in Java applications.
+- **Swagger**: A toolkit for generating interactive API documentation, enhancing developer interaction with the API.
+- **MySQL**: A relational database management system used for storing and managing application data.
+- **Docker**: A platform for developing, shipping, and running applications within containers, ensuring consistency across environments.
+- **JUnit 5**: A modern testing framework for writing and executing unit tests in Java.
+- **Mockito**: A testing framework that allows the creation of mock objects for effective unit testing.
 
-- **Java**: Programming language used as the foundation for the project.
-- **Spring Boot**: Framework for building robust Java applications.
-- **Spring Security**: Provides authentication and authorization capabilities.
-- **JWT**: (JSON Web Token) Standard for securely transmitting information between parties as a JSON object.
-- **Spring Data JPA**: Simplifies the data access layer by abstracting away the boilerplate code.
-- **Mapstruct**: Used for mapping between DTOs and entities.
-- **Lombok**: Library for reducing boilerplate code in Java classes.
-- **Maven**: Build automation tool used for managing dependencies and building the project.
-- **Liquibase**: Manages database schema changes over time.
-- **Jackson**: Provides JSON serialization and deserialization capabilities in Java.
-- **Swagger**: Generates interactive API documentation.
-- **MySQL**: Database for storing application data.
-- **Docker**: For containerizing the application.
-- **JUnit 5**: Framework for unit testing.
-- **Mockito**: Framework for mocking objects in tests.
+## Layered Architecture
+- **Controller Layer**: Handles incoming HTTP requests and communicates with clients. Controllers contain methods that process these requests and call the necessary services to execute business operations.
+- **Service Layer**: Encapsulates the business logic of the application. This layer manages data processing and interaction with repositories and mappers to fulfill business requirements.
+- **Repository Layer**: Manages direct interactions with the database. Repositories are responsible for querying, saving, updating, and deleting data as dictated by the application's needs.
+- **Security Layer**: Oversees authentication and authorization processes. This layer ensures secure access to resources by implementing role-based access control mechanisms.
+- **DTO** (Data Transfer Object) Layer: Consists of objects designed for transferring data between different layers of the application, streamlining data communication by including only necessary information.
+- **Mapper Layer**: Facilitates the conversion between different object models, specifically between entities and Data Transfer Objects (DTOs), ensuring data consistency across layers.
+- **Test**: Encompasses unit and integration tests that validate the functionality and correctness of various application components, including controllers, services, and repositories.
 
-## Inside the Book Store
-
-The project is structured using Layered Architecture, providing a clear separation of concerns with distinct levels. Each level is responsible for specific aspects of functionality, ensuring a well-organized and modularized design.
-
-1. **Controller Layer:**
-   Responsible for handling HTTP requests and interacting with clients. Controllers contain logic to process requests and invoke corresponding services.
-
-2. **Service Layer:**
-   Implements the business logic of the application. Services interact with repositories and mappers for data processing and storage.
-
-3. **Repository Layer:**
-   Handles interactions with the database. Repositories are responsible for retrieving and storing data in accordance with the business logic.
-
-4. **Security Layer:**
-   Manages authentication and authorization, securing access to protected resources through role-based access control (e.g., USER and ADMIN roles).
-
-5. **DTO (Data Transfer Object) Layer:**
-   Contains objects used for data transfer between levels, optimizing data exchange and eliminating unnecessary information in responses.
-
-6. **Mapper Layer:**
-   Utilized for converting objects between entities and Data Transfer Objects (DTOs).
-
-7. **Test:**
-   Includes tests to verify the correctness of various parts of the application, including controllers, services, and repositories.
-
-Entities include:
-- **Book:** Represents a book with details such as title, author, and other characteristics.
-- **Category:** Used for classifying books into categories.
-- **Shopping Cart:** Contains information about items added to a user's shopping cart.
-- **Cart Item:** Represents an item in the cart with a link to a specific book.
-- **User:** Represents a user with account details and roles.
-- **Role:** Defines user roles (e.g., USER and ADMIN).
-- **Order:** Stores information about orders, including purchase details and other attributes.
-- **Order Item:** Links books to a specific order and stores the quantity of purchased copies.
-Below, you'll find detailed explanations for each endpoint in the Postman collection, helping you navigate and understand the functionalities of the Bookstore API more effectively.
+### Database entities
+- **Book**: Represents a literary work with associated metadata such as title, author, publication year, and other pertinent details.
+- **Category**: A classification system for organizing books into various genres or subjects.
+- **Shopping Cart**: A temporary repository for products selected by a user for potential purchase, containing itemized details.
+- **Cart Item**: An individual entry within a shopping cart that specifies a particular book and its quantity.
+- **User**: An individual with a registered account on the platform, encompassing personal details and assigned permissions.
+- **Role**: A set of permissions assigned to a user, determining their access level and capabilities within the system, such as USER or ADMIN.
+- **Order**: A record of a completed transaction, capturing details of the purchase, including items bought, payment information, and delivery specifics.
+- **Order Item**: A component of an order that details the specific book purchased and the number of units bought.
 
 ## Access to endpoints
-🟩 - publicly available  
-🟨 - for logged-in users  
-🟥 - for administrators
+🟩 - public  
+🟨 - for logged users  
+🟥 - for admin
 
-### User Management
-
-- 🟩 `POST: /api/auth/registration` - **User Registration**: New customers can register with their email, password, and personal details.
-- 🟩 `POST: /api/auth/login` - **User Authentication**: Secure login mechanism for registered users.
-
-### Book Management
-
-- 🟨 `GET: /api/books` - **Retrieve Book Catalog**: Users can browse the catalog of available books.
-- 🟨 `GET: /api/books/{id}` - **View Book Details**: Users can also check information about each book individually.
-- 🟨 `GET: /api/books/search` - **Search Books**: Users can search for books based on various parameters.
-- 🟥 `POST: /api/books` - **Add New Book**: Admin users can add new books to the catalog.
-- 🟥 `PUT: /api/books/{id}` - **Update Book Details**: Admin users can update existing book details.
-- 🟥 `DELETE: /api/books/{id}` - **Delete Book**: Admin users can remove books from the catalog.
-
-### Category Management
-
-- 🟨 `GET: /api/categories` - **Retrieve Categories**: Users can view the list of available categories.
-- 🟨 `GET: /api/categories/{id}` - **View Category**: Users can also check information about each category individually.
-- 🟨 `GET: /api/categories/{id}/books` - **Get Books by Category**: Users can retrieve all books belonging to a specific category.
-- 🟥 `POST: /api/categories` - **Create Category**: Admin users can create new categories for books.
-- 🟥 `PUT: /api/categories/{id}` - **Update Category**: Admin users can update category details.
-- 🟥 `DELETE: /api/categories/{id}` - **Delete Category**: Admin users can delete categories.
-
+### User
+- 🟩 **POST**: /api/auth/registration - User Registration: Customers can sign up by providing their email, password, and personal information.
+- 🟩 **POST**: /api/auth/login - User Authentication: Registered users can securely log in.
+### Book
+- 🟨 **GET**: /api/books - Retrieve Book Catalog: Users have the ability to view the catalog of available books.
+- 🟨 **GET**: /api/books/{id} - View Book Details: Users can access detailed information about individual books.
+- 🟨 **GET**: /api/books/search - Search Books: Users can search for books using various criteria.
+- 🟥 **POST**: /api/books - Add New Book: Admins can add new books to the collection.
+- 🟥 **PUT**: /api/books/{id} - Update Book Details: Admins can modify the details of existing books.
+- 🟥 **DELETE**: /api/books/{id} - Delete Book: Admins can remove books from the catalog.
+### Category
+- 🟨 **GET**: /api/categories - Retrieve Categories: Users can view the list of all available categories.
+- 🟨 **GET**: /api/categories/{id} - View Category: Users can get detailed information about specific categories.
+- 🟨 **GET**: /api/categories/{id}/books - Get Books by Category: Users can see all books that belong to a particular category.
+- 🟥 **POST**: /api/categories - Create Category: Admins can create new book categories.
+- 🟥 **PUT**: /api/categories/{id} - Update Category: Admins can update information about existing categories.
+- 🟥 **DELETE**: /api/categories/{id} - Delete Category: Admins can delete categories from the list.
 ### Shopping Cart
-
-- 🟨 `GET: /api/cart` - **View Cart**: Users can view the contents of their shopping cart.
-- 🟨 `POST: /api/cart` - **Add to Cart**: Users can add books to their shopping cart.
-- 🟨 `PUT: /api/cart/cart-items/{id}` - **Update Cart**: Users can update the quantity of a specific item in their cart.
-- 🟨 `DELETE: /api/cart/cart-items/{id}` - **Remove from Cart**: Users can remove a specific item from their cart.
-
-### Order Management
-
-- 🟨 `GET: /api/orders` - **View Orders History**: Users can view all their orders history.
-- 🟨 `GET: /api/orders/{id}/items` - **View Order Items**: Users can view all items included in a specific order.
-- 🟨 `GET: /api/orders/{orderId}/items/{itemId}` - **View Specific Order Item**: Users can check details of a particular item within an order.
-- 🟨 `POST: /api/orders` - **Place Order**: Users can place orders for the books in their cart.
-- 🟥 `PATCH: /api/orders/{id}` - **Update Order Status**: Admin users can update the status of orders.
+- 🟨 **GET**: /api/cart - View Cart: Users can see what is in their shopping cart.
+- 🟨 **POST**: /api/cart - Add to Cart: Users can add books to their cart.
+- 🟨 **PUT**: /api/cart/cart-items/{id} - Update Cart: Users can change the quantity of items in their cart.
+- 🟨 **DELETE**: /api/cart/cart-items/{id} - Remove from Cart: Users can remove items from their cart.
+### Order
+- 🟨 **GET**: /api/orders - View Orders History: Users can view their order history.
+- 🟨 **GET**: /api/orders/{id}/items - View Order Items: Users can see all items in a specific order.
+- 🟨 **GET**: /api/orders/{orderId}/items/{itemId} - View Specific Order Item: Users can get details of a particular item within an order.
+- 🟨 **POST**: /api/orders - Place Order: Users can place an order for books in their cart.
+- 🟥 **PATCH**: /api/orders/{id} - Update Order Status: Admins can update the status of orders.
 
 ## SQL Database Diagram
 Below is a representation of the database used in the project:
@@ -152,4 +125,4 @@ Incorporating a payment system, likely utilizing the Stripe API, to enable secur
 
 ## Final thoughts
 
-This is my first big java project, I encountered a few difficulties while working on it. Some of which I was able to deal with fairly quickly, but some of which were more difficult. Solving the most difficult problems was what satisfied me the most. The issues I encountered allowed me to develop the ability to effectively search for solutions, using the information in the available documentation. Thanks to the knowledge I gained, I know that the future obstacles in my path I will be able to overcome quicker.
+This was my first major Java project, and I faced several challenges along the way. While I managed to resolve some issues quickly, others proved to be more complex. The satisfaction of overcoming the toughest problems was particularly rewarding. These challenges enhanced my ability to efficiently search for solutions using available documentation. With the knowledge I've gained, I am confident that I will be able to tackle future obstacles more swiftly.

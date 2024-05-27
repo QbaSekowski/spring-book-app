@@ -33,8 +33,8 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get the history of all orders",
-            description = "Get the history of all orders")
+    @Operation(summary = "Get the history of all orders for a specific user",
+            description = "Get the history of all orders for a specific user")
     public List<OrderDto> getOrdersHistory(Authentication authentication) {
         return orderService.getAllOrders(
                 userService.getUserFromAuthentication(authentication).getId());
@@ -42,8 +42,8 @@ public class OrderController {
 
     @GetMapping("/{orderId}/items")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get the list of all items in the order",
-            description = "Get the list of all items in the order")
+    @Operation(summary = "Get the list of all items in the order for a specific user",
+            description = "Get the list of all items in the order for a specific user")
     public List<OrderItemDto> getAllItemsFromOrder(Authentication authentication,
                                                    @PathVariable Long orderId) {
         return orderService.getAllItemsFromOrder(
@@ -64,7 +64,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Place a new order",
-            description = "Place a new order as an authenticated user")
+            description = "Place a new order as a specific user")
     public OrderDto placeOrder(Authentication authentication,
                                @RequestBody @Valid PlaceOrderRequestDto placeOrderRequestDto) {
         return orderService.placeOrder(

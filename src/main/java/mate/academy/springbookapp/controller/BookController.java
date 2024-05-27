@@ -64,7 +64,7 @@ public class BookController {
     @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Search books by parameters",
             description = "Get a list of books by given parameters: "
-                    + "author, title, isbn")
+                    + "author, title, isbn, minPrice, maxPrice")
     public List<BookDtoWithoutCategoryIds> search(Pageable pageable,
                                                   BookSearchParametersDto bookSearchParametersDto) {
         return bookService.search(bookSearchParametersDto, pageable);

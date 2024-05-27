@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.controller.category;
+package mate.academy.springbookapp.controller.category;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -212,4 +212,4 @@ public class CategoryControllerTest {
         return expected;
     }
 }
-*/
+

@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.controller.shoppingcart;
+package mate.academy.springbookapp.controller.shoppingcart;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -195,4 +195,3 @@ public class ShoppingCartControllerTest {
         return expectedCart;
     }
 }
-*/

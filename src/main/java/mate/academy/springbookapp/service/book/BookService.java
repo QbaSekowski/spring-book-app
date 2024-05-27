@@ -26,4 +26,6 @@ public interface BookService {
     BookDto findByIdWithCategories(Long id);
 
     List<BookDto> findAllWithCategories(Pageable pageable);
+
+
 }

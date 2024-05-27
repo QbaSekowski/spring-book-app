@@ -1,4 +1,4 @@
-/*package mate.academy.springbookapp.repository.shoppingcart;
+package mate.academy.springbookapp.repository.shoppingcart;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -89,4 +89,3 @@ public class ShoppingCartRepositoryTest {
         return expectedCart;
     }
 }
-*/

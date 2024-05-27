@@ -33,7 +33,7 @@ public class BookRepositoryTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllWithCategories_ThreeBooksInDB_ReturnsThreeBooks() {
         int expected = 3;
-        List<Book> actualList = bookRepository.findAllWithCategories(
+        List<Book> actualList = bookRepository.findAllBooksHavingCategories(
                         PageRequest.of(0, 10)).stream()
                 .toList();
         assertEquals(expected, actualList.size());
@@ -48,7 +48,7 @@ public class BookRepositoryTest {
     void findByIdWithCategories_InvalidBookId_ReturnsEmptyOptional() {
         Long notCorrectId = 40L;
         Optional<Book> expected = Optional.empty();
-        Optional<Book> actual = bookRepository.findByIdWithCategories(notCorrectId);
+        Optional<Book> actual = bookRepository.findBookByIdHavingCategories(notCorrectId);
         assertEquals(expected, actual);
     }
 
@@ -73,7 +73,7 @@ public class BookRepositoryTest {
         expected.setDescription("Fantasy Description 1");
         expected.setCoverImage("images.com/image1.jpg");
         expected.setCategories(Set.of(expectedCategory));
-        Optional<Book> actual = bookRepository.findByIdWithCategories(validId);
+        Optional<Book> actual = bookRepository.findBookByIdHavingCategories(validId);
         assertFalse(actual.isEmpty());
         assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -87,7 +87,7 @@ public class BookRepositoryTest {
     void findAllByCategoryId_ValidCategoryId_ReturnsTwoBooks() {
         Long correctCategoryId = 1L;
         int expected = 2;
-        List<Book> actual = bookRepository.findAllByCategoryId(correctCategoryId,
+        List<Book> actual = bookRepository.findAllBooksHavingCategoryById(correctCategoryId,
                         PageRequest.of(0, 10))
                 .stream()
                 .toList();
@@ -103,7 +103,7 @@ public class BookRepositoryTest {
     void findAllByCategoryId_InvalidCategoryId_ReturnsEmptyListOfBooks() {
         Long notCorrectCategoryId = 10L;
         List<Book> expected = new ArrayList<>();
-        List<Book> actual = bookRepository.findAllByCategoryId(
+        List<Book> actual = bookRepository.findAllBooksHavingCategoryById(
                         notCorrectCategoryId,
                         PageRequest.of(0, 10))
                 .stream()

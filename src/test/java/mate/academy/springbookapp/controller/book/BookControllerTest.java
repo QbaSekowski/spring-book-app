@@ -43,9 +43,9 @@ public class BookControllerTest {
     protected static MockMvc mockMvc;
     private static final String CONTROLLER_ENDPOINT = "/api/books";
     private static final String DB_PATH_ADD_THREE_BOOKS_WITH_CATEGORIES
-            = "database/book/add-three-books-with-categories.sql";
+            = "database/book/add-three-books.sql";
     private static final String DB_PATH_REMOVE_ALL_BOOKS_WITH_CATEGORIES
-            = "database/book/remove-all-books-with-categories.sql";
+            = "database/book/delete-all-books.sql";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -81,115 +81,112 @@ public class BookControllerTest {
     @Sql(scripts = {"classpath:database/book/delete-created-book.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void createBook_ValidRequestDto_ReturnsNewBook() throws Exception {
-        CreateBookRequestDto requestDto = createTestCreateBookRequestDto();
-        BookDto expected = getBookDtoFromRequest(4L, requestDto);
+        CreateBookRequestDto requestDto = createNewBookAsCreateBookRequestDto();
+        BookDto expectedBook = getBookDtoUsingRequestDto(4L, requestDto);
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         MvcResult result = mockMvc.perform(post(CONTROLLER_ENDPOINT)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
-        BookDto actual = objectMapper.readValue(
+        BookDto actualBook = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
-        assertNotNull(actual.getId());
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertNotNull(actualBook.getId());
+        EqualsBuilder.reflectionEquals(expectedBook, actualBook, "id");
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
     void getAll_ThreeBooksInDb_ReturnsAllBooks() throws Exception {
-        List<BookDtoWithoutCategoryIds> expected = getThreeBookDtoWithoutCategoryIds();
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = getThreeBooksDtoWithNoCategories();
         MvcResult result = mockMvc.perform(
                         get(CONTROLLER_ENDPOINT).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDtoWithoutCategoryIds[] actual = objectMapper.readValue(
+        BookDtoWithoutCategoryIds[] actualListOfBooks = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds[].class);
-        assertNotNull(actual);
-        assertEquals(3, actual.length);
-        assertEquals(expected, Arrays.stream(actual).toList());
+        assertNotNull(actualListOfBooks);
+        assertEquals(3, actualListOfBooks.length);
+        assertEquals(expectedListOfBooks, Arrays.stream(actualListOfBooks).toList());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql",
-            "classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
+            "classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void updateBookById_ValidRequestDto_ReturnsUpdatedBook() throws Exception {
-        Long idPassed = 2L;
-        CreateBookRequestDto requestDto = createTestCreateBookRequestDto();
-        BookDto expected = getBookDtoFromRequest(idPassed, requestDto);
+        Long validId = 2L;
+        CreateBookRequestDto requestDto = createNewBookAsCreateBookRequestDto();
+        BookDto expectedBook = getBookDtoUsingRequestDto(validId, requestDto);
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        MvcResult result = mockMvc.perform(put(CONTROLLER_ENDPOINT + "/" + idPassed)
+        MvcResult result = mockMvc.perform(put(CONTROLLER_ENDPOINT + "/" + validId)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDto actual = objectMapper.readValue(
+        BookDto actualBook = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
-        assertNotNull(actual.getId());
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertNotNull(actualBook.getId());
+        EqualsBuilder.reflectionEquals(expectedBook, actualBook, "id");
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    void getBookById_ValidId_ReturnsBookDtoWithoutCategoryIds() throws Exception {
+    void getBookById_ValidId_ReturnsBookDtoWithNoCategories() throws Exception {
         long validId = 2L;
-        BookDtoWithoutCategoryIds expected = getThreeBookDtoWithoutCategoryIds().get(1);
-
+        BookDtoWithoutCategoryIds expectedBook = getThreeBooksDtoWithNoCategories().get(1);
         MvcResult result = mockMvc.perform(
                         get(CONTROLLER_ENDPOINT + "/"
                                 + validId).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDtoWithoutCategoryIds actual = objectMapper.readValue(
+        BookDtoWithoutCategoryIds actualBook = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds.class);
-        assertNotNull(actual);
-        assertEquals(expected, actual);
+        assertNotNull(actualBook);
+        assertEquals(expectedBook, actualBook);
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    void search_ValidSearchParameters_ReturnsAllMatchingBookDtoWithoutCategoryIds()
+    void search_ValidSearchParameters_ReturnsTwoCorrectBooksDtoWithNoCategories()
             throws Exception {
-        List<BookDtoWithoutCategoryIds> expected = getTwoMatchingBookDtoWithoutCategoryIds();
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = getTwoCorrectBooksDtoWithNoCategories();
         BookSearchParametersDto searchParameters = new BookSearchParametersDto(
                 null, null, null, "35", "50");
         MvcResult result = mockMvc.perform(
                         get(CONTROLLER_ENDPOINT
-                                + "/search?minPrice="
-                                + searchParameters.minPrice()
-                                + "&maxPrice="
-                                + searchParameters.maxPrice())
+                                + "/search?minPrice=" + searchParameters.minPrice()
+                                + "&maxPrice=" + searchParameters.maxPrice())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDtoWithoutCategoryIds[] actual = objectMapper.readValue(
+        BookDtoWithoutCategoryIds[] actualListOfBooks = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds[].class);
-        assertNotNull(actual);
-        assertEquals(2, actual.length);
-        assertEquals(expected, Arrays.stream(actual).toList());
+        assertNotNull(actualListOfBooks);
+        assertEquals(2, actualListOfBooks.length);
+        assertEquals(expectedListOfBooks, Arrays.stream(actualListOfBooks).toList());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql",
-            "classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
+            "classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteBook_ValidId_ReturnsNoContentStatus() throws Exception {
-        long idPassed = 2L;
-        mockMvc.perform(delete(CONTROLLER_ENDPOINT + "/" + idPassed)
+        long validId = 2L;
+        mockMvc.perform(delete(CONTROLLER_ENDPOINT + "/" + validId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
         mockMvc.perform(
-                        get(CONTROLLER_ENDPOINT + "/" + idPassed)
+                        get(CONTROLLER_ENDPOINT + "/" + validId)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
 
-    private List<BookDtoWithoutCategoryIds> getThreeBookDtoWithoutCategoryIds() {
+    private List<BookDtoWithoutCategoryIds> getThreeBooksDtoWithNoCategories() {
         List<BookDtoWithoutCategoryIds> expected = new ArrayList<>();
         expected.add(new BookDtoWithoutCategoryIds(
                 1L,
@@ -218,7 +215,7 @@ public class BookControllerTest {
         return expected;
     }
 
-    private List<BookDtoWithoutCategoryIds> getTwoMatchingBookDtoWithoutCategoryIds() {
+    private List<BookDtoWithoutCategoryIds> getTwoCorrectBooksDtoWithNoCategories() {
         List<BookDtoWithoutCategoryIds> expected = new ArrayList<>();
         expected.add(new BookDtoWithoutCategoryIds(
                 1L,
@@ -239,7 +236,7 @@ public class BookControllerTest {
         return expected;
     }
 
-    private CreateBookRequestDto createTestCreateBookRequestDto() {
+    private CreateBookRequestDto createNewBookAsCreateBookRequestDto() {
         return new CreateBookRequestDto(
                 "A new created book",
                 "Author of a new created book",
@@ -250,7 +247,7 @@ public class BookControllerTest {
                 Set.of(1L));
     }
 
-    private BookDto getBookDtoFromRequest(Long id, CreateBookRequestDto requestDto) {
+    private BookDto getBookDtoUsingRequestDto(Long id, CreateBookRequestDto requestDto) {
         return new BookDto(
                 id,
                 requestDto.title(),

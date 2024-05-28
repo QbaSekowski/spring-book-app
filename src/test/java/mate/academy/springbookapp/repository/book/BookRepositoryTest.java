@@ -27,9 +27,9 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Find all books with categories")
-    @Sql(scripts = {"classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllWithCategories_ThreeBooksInDB_ReturnsThreeBooks() {
         int expected = 3;
@@ -41,9 +41,9 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Find book by invalid ID with categories")
-    @Sql(scripts = {"classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findByIdWithCategories_InvalidBookId_ReturnsEmptyOptional() {
         Long notCorrectId = 40L;
@@ -54,9 +54,9 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Find book by valid ID with categories")
-    @Sql(scripts = {"classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findByIdWithCategories_ValidBookId_ReturnsOneBook() {
         Category expectedCategory = new Category();
@@ -80,9 +80,9 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Find all books by valid category ID")
-    @Sql(scripts = {"classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllByCategoryId_ValidCategoryId_ReturnsTwoBooks() {
         Long correctCategoryId = 1L;
@@ -96,9 +96,9 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Find all books by invalid category ID")
-    @Sql(scripts = {"classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllByCategoryId_InvalidCategoryId_ReturnsEmptyListOfBooks() {
         Long notCorrectCategoryId = 10L;

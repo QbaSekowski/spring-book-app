@@ -43,7 +43,7 @@ public class CategoryControllerTest {
     private static final String DB_PATH_ADD_THREE_CATEGORIES
             = "database/category/add-three-categories.sql";
     private static final String DB_PATH_DELETE_THREE_CATEGORIES
-            = "database/category/delete-three-categories.sql";
+            = "database/category/delete-categories.sql";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -94,7 +94,7 @@ public class CategoryControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = {"classpath:database/category/delete-created-category.sql"},
+    @Sql(scripts = {"classpath:database/category/delete-newly-created-category.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void createCategory_ValidRequestDto_ReturnsNewCategory() throws Exception {
         CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
@@ -115,10 +115,10 @@ public class CategoryControllerTest {
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    @Sql(scripts = {"classpath:database/category/delete-three-categories.sql",
-            "classpath:database/book/add-three-books-with-categories.sql"},
+    @Sql(scripts = {"classpath:database/category/delete-categories.sql",
+            "classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:database/book/remove-all-books-with-categories.sql",
+    @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
             "classpath:database/category/add-three-categories.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getBooksByCategoryId_ValidCategoryId_ReturnsAllMatchingCategories() throws Exception {
@@ -153,7 +153,7 @@ public class CategoryControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = {"classpath:database/category/revert-category-updated.sql"},
+    @Sql(scripts = {"classpath:database/category/undo-category-update.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteCategory_ValidId_ReturnsNoContentStatus() throws Exception {
         long idPassed = 2L;
@@ -170,7 +170,7 @@ public class CategoryControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = {"classpath:database/category/revert-category-updated.sql"},
+    @Sql(scripts = {"classpath:database/category/undo-category-update.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void updateCategory_ValidRequestDtoAndId_ReturnsUpdatedCategory() throws Exception {
         Long idPassed = 2L;

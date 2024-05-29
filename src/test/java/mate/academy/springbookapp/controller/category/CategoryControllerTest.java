@@ -77,26 +77,26 @@ public class CategoryControllerTest {
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
     void getAll_ThreeCategoriesInDb_ReturnsAllCategories() throws Exception {
-        List<CategoryDto> expected = new ArrayList<>();
-        expected.add(new CategoryDto(1L, "Drama", "Drama category"));
-        expected.add(new CategoryDto(2L, "Romance", "Romance category"));
-        expected.add(new CategoryDto(3L, "Thriller", "Thriller category"));
+        List<CategoryDto> expectedListOfCategories = new ArrayList<>();
+        expectedListOfCategories.add(new CategoryDto(1L, "Drama", "Drama category"));
+        expectedListOfCategories.add(new CategoryDto(2L, "Romance", "Romance category"));
+        expectedListOfCategories.add(new CategoryDto(3L, "Thriller", "Thriller category"));
         MvcResult result = mockMvc.perform(
                         get(BASE_ENDPOINT).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto[] actual = objectMapper.readValue(
+        CategoryDto[] actualListOfBooks = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), CategoryDto[].class);
-        assertNotNull(actual);
-        assertEquals(3, actual.length);
-        assertEquals(expected, Arrays.stream(actual).toList());
+        assertNotNull(actualListOfBooks);
+        assertEquals(3, actualListOfBooks.length);
+        assertEquals(expectedListOfCategories, Arrays.stream(actualListOfBooks).toList());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     @Sql(scripts = {"classpath:database/category/delete-newly-created-category.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void createCategory_ValidRequestDto_ReturnsNewCategory() throws Exception {
+    void createCategory_CorrectRequestDto_ReturnsNewCategory() throws Exception {
         CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
                 "Comedy", "Comedy category");
         CategoryDto expected = new CategoryDto(4L, requestDto.name(), requestDto.description());
@@ -121,48 +121,49 @@ public class CategoryControllerTest {
     @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
             "classpath:database/category/add-three-categories.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void getBooksByCategoryId_ValidCategoryId_ReturnsAllMatchingCategories() throws Exception {
-        long validCategoryId = 1L;
-        List<BookDtoWithoutCategoryIds> expected = getTwoBookDtoWithoutCategoryIds();
+    void getBooksByCategoryId_CorrectCategoryId_ReturnsCorrectCategories() throws Exception {
+        long categoryId = 1L;
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = getTwoBookDtoWithNoCategories();
         MvcResult result = mockMvc.perform(
-                        get(BASE_ENDPOINT + "/" + validCategoryId + "/books")
+                        get(BASE_ENDPOINT + "/" + categoryId + "/books")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        BookDtoWithoutCategoryIds[] actual = objectMapper.readValue(
+        BookDtoWithoutCategoryIds[] actualListOfBooks = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds[].class);
-        assertNotNull(actual);
-        assertEquals(2, actual.length);
-        assertEquals(expected, Arrays.stream(actual).toList());
+        assertNotNull(actualListOfBooks);
+        assertEquals(2, actualListOfBooks.length);
+        assertEquals(expectedListOfBooks, Arrays.stream(actualListOfBooks).toList());
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    void getCategoryById_ValidId_ReturnsCategoryDto() throws Exception {
-        Long validId = 3L;
-        CategoryDto expected = new CategoryDto(validId, "Thriller", "Thriller category");
+    void getCategoryById_CorrectId_ReturnsCategoryDto() throws Exception {
+        Long categoryId = 3L;
+        CategoryDto expectedCategory = new CategoryDto(categoryId, "Thriller",
+                "Thriller category");
         MvcResult result = mockMvc.perform(
-                        get(BASE_ENDPOINT + "/" + validId).contentType(MediaType.APPLICATION_JSON))
+                        get(BASE_ENDPOINT + "/"
+                                + categoryId).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto actual = objectMapper.readValue(
+        CategoryDto actualCategory = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), CategoryDto.class);
-        assertNotNull(actual);
-        assertEquals(expected, actual);
+        assertNotNull(actualCategory);
+        assertEquals(expectedCategory, actualCategory);
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     @Sql(scripts = {"classpath:database/category/undo-category-update.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void deleteCategory_ValidId_ReturnsNoContentStatus() throws Exception {
-        long idPassed = 2L;
-        mockMvc.perform(delete(BASE_ENDPOINT + "/" + idPassed)
+    void deleteCategory_CorrectId_ReturnsNoContentStatus() throws Exception {
+        long categoryId = 2L;
+        mockMvc.perform(delete(BASE_ENDPOINT + "/" + categoryId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
-        mockMvc.perform(
-                        get(BASE_ENDPOINT + "/" + idPassed)
+        mockMvc.perform(get(BASE_ENDPOINT + "/" + categoryId)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
@@ -172,26 +173,26 @@ public class CategoryControllerTest {
     @Test
     @Sql(scripts = {"classpath:database/category/undo-category-update.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void updateCategory_ValidRequestDtoAndId_ReturnsUpdatedCategory() throws Exception {
-        Long idPassed = 2L;
+    void updateCategory_CorrectRequestDtoAndId_ReturnsUpdatedCategory() throws Exception {
+        Long categoryId = 2L;
         CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
                 "Updated name", "Updated description");
-        CategoryDto expected = new CategoryDto(
-                idPassed, requestDto.name(), requestDto.description());
+        CategoryDto expectedCategory = new CategoryDto(
+                categoryId, requestDto.name(), requestDto.description());
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         MvcResult result = mockMvc.perform(
-                        put(BASE_ENDPOINT + "/" + idPassed)
+                        put(BASE_ENDPOINT + "/" + categoryId)
                                 .content(jsonRequest)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        CategoryDto actual = objectMapper.readValue(
+        CategoryDto actualCategory = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
-        assertNotNull(actual.id());
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertNotNull(actualCategory.id());
+        EqualsBuilder.reflectionEquals(expectedCategory, actualCategory, "id");
     }
 
-    private List<BookDtoWithoutCategoryIds> getTwoBookDtoWithoutCategoryIds() {
+    private List<BookDtoWithoutCategoryIds> getTwoBookDtoWithNoCategories() {
         List<BookDtoWithoutCategoryIds> expected = new ArrayList<>();
         expected.add(new BookDtoWithoutCategoryIds(
                 1L,

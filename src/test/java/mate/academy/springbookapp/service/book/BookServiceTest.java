@@ -77,9 +77,9 @@ public class BookServiceTest {
             + " - Returns all books DTOs without category IDs")
     void findAll_ValidPageable_ReturnsAllBookDtoWithoutCategoryIds() {
         Book modelBook = createTestBook(1L, "66565-878787", new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategoryIds(modelBook);
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
         Book modelBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("16.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategoryIds(modelBook2);
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(modelBook, modelBook2);
         PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
@@ -101,7 +101,7 @@ public class BookServiceTest {
         Long validId = 1L;
         Book modelBook = createTestBook(validId, "66565-878787",
                 new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds expected = createTestBookDtoWithoutCategoryIds(modelBook);
+        BookDtoWithoutCategoryIds expected = createTestBookDtoWithoutCategories(modelBook);
         when(bookRepository.findById(validId)).thenReturn(Optional.of(modelBook));
         when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(expected);
         BookDtoWithoutCategoryIds actual = bookService.findById(validId);
@@ -131,9 +131,9 @@ public class BookServiceTest {
             + " - Returns matching books DTOs without category IDs")
     void search_ValidPageableAndSearchParameters_ReturnsAllMatchingBookDtoWithoutCategoryIds() {
         Book modelBook = createTestBook(1L, "66565-878787", new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategoryIds(modelBook);
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
         Book modelBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("24.70"), Set.of(2L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategoryIds(modelBook2);
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
         String minPrice = "10.00";
         String maxPrice = "25.00";
         BookSearchParametersDto bookSearchParametersDto = new BookSearchParametersDto(
@@ -164,10 +164,10 @@ public class BookServiceTest {
     void search_ValidPageableAndEmptySearchParameters_ReturnsAllBookDtoWithoutCategoryIds() {
         Book modelBook = createTestBook(1L, "66565-878787",
                 new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategoryIds(modelBook);
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
         Book modelBook2 = createTestBook(2L, "66565-878787-1",
                 new BigDecimal("244.70"), Set.of(32L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategoryIds(modelBook2);
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
         BookSearchParametersDto bookSearchParametersDto = new BookSearchParametersDto(
                 null, null, null, null, null);
         Specification<Book> specification = Specification.where(null);
@@ -217,10 +217,10 @@ public class BookServiceTest {
         Long validCategoryId = 1L;
         Book modelBook = createTestBook(
                 1L, "66565-878787", new BigDecimal("11.70"), Set.of(validCategoryId));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategoryIds(modelBook);
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
         Book modelBook2 = createTestBook(
                 2L, "66565-878787-1", new BigDecimal("19.70"), Set.of(validCategoryId));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategoryIds(modelBook2);
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(modelBook, modelBook2);
         PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
@@ -321,7 +321,7 @@ public class BookServiceTest {
         return bookDto;
     }
 
-    private BookDtoWithoutCategoryIds createTestBookDtoWithoutCategoryIds(Book modelBook) {
+    private BookDtoWithoutCategoryIds createTestBookDtoWithoutCategories(Book modelBook) {
         return new BookDtoWithoutCategoryIds(
                 modelBook.getId(),
                 modelBook.getTitle(),

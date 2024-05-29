@@ -85,9 +85,9 @@ public class ShoppingCartControllerTest {
     @Sql(scripts = {"classpath:database/shoppingcart/delete_shopping_cart.sql",
             "classpath:database/shoppingcart/add_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void deleteItemFromCart_ValidCartItemId_ReturnsNoContentStatus() throws Exception {
-        long validCartItemId = 1L;
-        mockMvc.perform(delete(BASE_ENDPOINT + "/cart-item/" + validCartItemId)
+    void deleteItemFromCart_CorrectCartItemId_ReturnsNoContentStatus() throws Exception {
+        long cartItemId = 1L;
+        mockMvc.perform(delete(BASE_ENDPOINT + "/cart-item/" + cartItemId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
@@ -95,18 +95,18 @@ public class ShoppingCartControllerTest {
 
     @WithUserDetails(USER_EMAIL)
     @Test
-    void getCartWithItems_ValidUser_ReturnsShoppingCartDto() throws Exception {
-        long validUserId = 1L;
-        ShoppingCart modelCart = getTestShoppingCart(validUserId);
-        ShoppingCartDto expected = getTestShoppingCartDtoFromModel(modelCart);
+    void getCartWithItems_CorrectUser_ReturnsShoppingCartDto() throws Exception {
+        long userId = 1L;
+        ShoppingCart testShoppingCart = getTestShoppingCart(userId);
+        ShoppingCartDto expectedCart = getTestShoppingCartDtoFromModelCart(testShoppingCart);
         MvcResult result = mockMvc.perform(
                         get(BASE_ENDPOINT).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        ShoppingCartDto actual = objectMapper.readValue(
+        ShoppingCartDto actualCart = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), ShoppingCartDto.class);
-        assertNotNull(actual);
-        assertEquals(expected, actual);
+        assertNotNull(actualCart);
+        assertEquals(expectedCart, actualCart);
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -114,46 +114,29 @@ public class ShoppingCartControllerTest {
     @Sql(scripts = {"classpath:database/shoppingcart/delete_shopping_cart.sql",
             "classpath:database/shoppingcart/add_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void updateItemQuantity_ValidCartItemIdAndRequestDto_ReturnsUpdatedCartItemDto()
+    void updateItemQuantity_CorrectCartItemIdAndRequestDto_ReturnsUpdatedCartItemDto()
             throws Exception {
-        long validCartItemId = 1L;
+        long cartItemId = 1L;
         UpdateCartItemRequestDto requestDto = new UpdateCartItemRequestDto(10);
-        CartItem modelItem = getTestShoppingCart(1L).getCartItems().stream()
+        CartItem item = getTestShoppingCart(1L).getCartItems().stream()
                 .findFirst()
                 .get();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        CartItemDto expected = new CartItemDto(
-                modelItem.getId(),
-                modelItem.getBook().getId(),
-                modelItem.getBook().getTitle(),
-                modelItem.getQuantity() + requestDto.quantity());
+        CartItemDto expectedCartItem = new CartItemDto(
+                item.getId(),
+                item.getBook().getId(),
+                item.getBook().getTitle(),
+                item.getQuantity() + requestDto.quantity());
         MvcResult result = mockMvc.perform(
-                        put(BASE_ENDPOINT + "/cart-item/" + validCartItemId)
+                        put(BASE_ENDPOINT + "/cart-item/" + cartItemId)
                                 .content(jsonRequest)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        CartItemDto actual = objectMapper.readValue(
+        CartItemDto actualCartItem = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), CartItemDto.class);
-        assertNotNull(actual.id());
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
-    }
-
-    private ShoppingCartDto getTestShoppingCartDtoFromModel(ShoppingCart shoppingCart) {
-        Set<CartItem> cartItems = shoppingCart.getCartItems();
-        Set<CartItemDto> cartItemDtoSet = new HashSet<>();
-        for (CartItem item : cartItems) {
-            cartItemDtoSet.add(
-                    new CartItemDto(
-                            item.getId(),
-                            item.getBook().getId(),
-                            item.getBook().getTitle(),
-                            item.getQuantity()));
-        }
-        return new ShoppingCartDto(
-                shoppingCart.getId(),
-                shoppingCart.getUser().getId(),
-                cartItemDtoSet);
+        assertNotNull(actualCartItem.id());
+        EqualsBuilder.reflectionEquals(expectedCartItem, actualCartItem, "id");
     }
 
     private ShoppingCart getTestShoppingCart(long userId) {
@@ -193,5 +176,22 @@ public class ShoppingCartControllerTest {
         cartItemHashSet.add(cartItem);
         expectedCart.setCartItems(cartItemHashSet);
         return expectedCart;
+    }
+
+    private ShoppingCartDto getTestShoppingCartDtoFromModelCart(ShoppingCart shoppingCart) {
+        Set<CartItem> cartItems = shoppingCart.getCartItems();
+        Set<CartItemDto> cartItemDtoSet = new HashSet<>();
+        for (CartItem item : cartItems) {
+            cartItemDtoSet.add(
+                    new CartItemDto(
+                            item.getId(),
+                            item.getBook().getId(),
+                            item.getBook().getTitle(),
+                            item.getQuantity()));
+        }
+        return new ShoppingCartDto(
+                shoppingCart.getId(),
+                shoppingCart.getUser().getId(),
+                cartItemDtoSet);
     }
 }

@@ -26,31 +26,31 @@ public class ShoppingCartRepositoryTest {
     private ShoppingCartRepository shoppingCartRepository;
 
     @Test
-    @DisplayName("Find shopping cart with items by invalid user ID")
+    @DisplayName("Find shopping cart of incorrect user")
     @Sql(scripts = {"classpath:database/shoppingcart/add_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"classpath:database/shoppingcart/delete_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void findCartWithItemsByUserId_InvalidUserId_ReturnsNull() {
-        long invalidUserId = 20L;
-        ShoppingCart actual = shoppingCartRepository.findCartWithItemsByUserId(invalidUserId);
-        assertNull(actual);
+    void findCartWithUserId_IncorrectUserId_ReturnsNull() {
+        long incorrectUserId = 20L;
+        ShoppingCart actualCart = shoppingCartRepository.findCartWithItemsByUserId(incorrectUserId);
+        assertNull(actualCart);
     }
 
     @Test
-    @DisplayName("Find a shopping cart with items by valid user ID")
+    @DisplayName("Find shopping cart of correct user")
     @Sql(scripts = {"classpath:database/shoppingcart/add_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"classpath:database/shoppingcart/delete_shopping_cart.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void findCartWithItemsByUserId_ValidUserId_ReturnsShoppingCart() {
-        long validUserId = 1L;
-        ShoppingCart expected = getTestShoppingCart(validUserId);
-        ShoppingCart actual = shoppingCartRepository.findCartWithItemsByUserId(validUserId);
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    void findCartWithUserId_CorrectUserId_ReturnsShoppingCart() {
+        long correctUserId = 1L;
+        ShoppingCart expectedCart = getTestShoppingCartWithUserID(correctUserId);
+        ShoppingCart actualCart = shoppingCartRepository.findCartWithItemsByUserId(correctUserId);
+        assertThat(actualCart).usingRecursiveComparison().isEqualTo(expectedCart);
     }
 
-    private ShoppingCart getTestShoppingCart(long userId) {
+    private ShoppingCart getTestShoppingCartWithUserID(long userId) {
         Role role = new Role();
         role.setId(1L);
         role.setName(Role.RoleName.USER);

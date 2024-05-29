@@ -80,7 +80,7 @@ public class BookControllerTest {
     @Test
     @Sql(scripts = {"classpath:database/book/delete-created-book.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void createBook_ValidRequestDto_ReturnsNewBook() throws Exception {
+    void createBook_CorrectRequestDto_ReturnsCreatedBook() throws Exception {
         CreateBookRequestDto requestDto = createNewBookAsCreateBookRequestDto();
         BookDto expectedBook = getBookDtoUsingRequestDto(4L, requestDto);
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
@@ -115,12 +115,12 @@ public class BookControllerTest {
     @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
             "classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void updateBookById_ValidRequestDto_ReturnsUpdatedBook() throws Exception {
-        Long validId = 2L;
+    void updateBookById_CorrectRequestDto_ReturnsUpdatedBook() throws Exception {
+        Long bookId = 2L;
         CreateBookRequestDto requestDto = createNewBookAsCreateBookRequestDto();
-        BookDto expectedBook = getBookDtoUsingRequestDto(validId, requestDto);
+        BookDto expectedBook = getBookDtoUsingRequestDto(bookId, requestDto);
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        MvcResult result = mockMvc.perform(put(CONTROLLER_ENDPOINT + "/" + validId)
+        MvcResult result = mockMvc.perform(put(CONTROLLER_ENDPOINT + "/" + bookId)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -133,12 +133,12 @@ public class BookControllerTest {
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    void getBookById_ValidId_ReturnsBookDtoWithNoCategories() throws Exception {
-        long validId = 2L;
+    void getBookById_CorrectId_ReturnsBookDtoWithNoCategories() throws Exception {
+        long bookId = 2L;
         BookDtoWithoutCategoryIds expectedBook = getThreeBooksDtoWithNoCategories().get(1);
         MvcResult result = mockMvc.perform(
                         get(CONTROLLER_ENDPOINT + "/"
-                                + validId).contentType(MediaType.APPLICATION_JSON))
+                                + bookId).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         BookDtoWithoutCategoryIds actualBook = objectMapper.readValue(
@@ -149,7 +149,7 @@ public class BookControllerTest {
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    void search_ValidSearchParameters_ReturnsTwoCorrectBooksDtoWithNoCategories()
+    void search_CorrectSearchParameters_ReturnsTwoCorrectBooksDtoWithNoCategories()
             throws Exception {
         List<BookDtoWithoutCategoryIds> expectedListOfBooks = getTwoCorrectBooksDtoWithNoCategories();
         BookSearchParametersDto searchParameters = new BookSearchParametersDto(
@@ -173,14 +173,14 @@ public class BookControllerTest {
     @Sql(scripts = {"classpath:database/book/delete-all-books.sql",
             "classpath:database/book/add-three-books.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void deleteBook_ValidId_ReturnsNoContentStatus() throws Exception {
-        long validId = 2L;
-        mockMvc.perform(delete(CONTROLLER_ENDPOINT + "/" + validId)
+    void deleteBook_CorrectId_ReturnsNoContentStatus() throws Exception {
+        long bookId = 2L;
+        mockMvc.perform(delete(CONTROLLER_ENDPOINT + "/" + bookId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
         mockMvc.perform(
-                        get(CONTROLLER_ENDPOINT + "/" + validId)
+                        get(CONTROLLER_ENDPOINT + "/" + bookId)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();

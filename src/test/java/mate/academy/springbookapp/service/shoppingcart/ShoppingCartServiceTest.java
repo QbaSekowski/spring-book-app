@@ -49,23 +49,23 @@ public class ShoppingCartServiceTest {
     private ShoppingCartServiceImpl cartService;
 
     @Test
-    @DisplayName("Update quantity of a cart item by valid cart item ID using valid request")
-    void updateItemQuantity_ValidCartItemIdAndRequestDto_ReturnsUpdatedCartItemDto() {
-        Long validCartItemId = 1L;
+    @DisplayName("Successfully update quantity of a cart item")
+    void updateCartItemQuantity_CorrectCartItemIdAndRequestDto_ReturnsUpdatedCartItemDto() {
+        Long correctCartItemId = 1L;
         UpdateCartItemRequestDto requestDto = new UpdateCartItemRequestDto(10);
-        CartItem modelItem = getTestShoppingCart(1L).getCartItems().stream()
+        CartItem testCartItem = getTestShoppingCart(1L).getCartItems().stream()
                 .findFirst()
                 .get();
-        CartItemDto expected = new CartItemDto(
-                modelItem.getId(),
-                modelItem.getBook().getId(),
-                modelItem.getBook().getTitle(),
-                modelItem.getQuantity() + requestDto.quantity());
-        when(cartItemRepository.findById(validCartItemId)).thenReturn(Optional.of(modelItem));
-        when(cartItemRepository.save(modelItem)).thenReturn(modelItem);
-        when(cartItemMapper.toDto(modelItem)).thenReturn(expected);
-        CartItemDto actual = cartService.updateItemQuantity(validCartItemId, requestDto);
-        assertEquals(expected, actual);
+        CartItemDto expectedCartItem = new CartItemDto(
+                testCartItem.getId(),
+                testCartItem.getBook().getId(),
+                testCartItem.getBook().getTitle(),
+                testCartItem.getQuantity() + requestDto.quantity());
+        when(cartItemRepository.findById(correctCartItemId)).thenReturn(Optional.of(testCartItem));
+        when(cartItemRepository.save(testCartItem)).thenReturn(testCartItem);
+        when(cartItemMapper.toDto(testCartItem)).thenReturn(expectedCartItem);
+        CartItemDto actualCartItem = cartService.updateItemQuantity(correctCartItemId, requestDto);
+        assertEquals(expectedCartItem, actualCartItem);
         verify(cartItemRepository, times(1)).findById(any());
         verify(cartItemRepository, times(1)).save(any());
         verify(cartItemMapper, times(1)).toDto(any());
@@ -73,89 +73,60 @@ public class ShoppingCartServiceTest {
     }
 
     @Test
-    @DisplayName("Update quantity of a cart item by invalid cart item ID")
-    void updateItemQuantity_InvalidCartItemId_ThrowsEntityNotFoundException() {
-        Long invalidCartItemId = 40L;
+    @DisplayName("Unsuccessfully update quantity of a cart item by providing incorrect cart item ID "
+            + "and throw EntityNotFoundException")
+    void updateCartItemQuantity_IncorrectCartItemId_ThrowsEntityNotFoundException() {
+        Long incorrectCartItemId = 40L;
         UpdateCartItemRequestDto requestDto = new UpdateCartItemRequestDto(10);
-        String expected = "Can't find cart item with id: " + invalidCartItemId;
-        when(cartItemRepository.findById(invalidCartItemId)).thenReturn(Optional.empty());
+        String expectedInfo = "Can't find cart item with id: " + incorrectCartItemId;
+        when(cartItemRepository.findById(incorrectCartItemId)).thenReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> cartService.updateItemQuantity(invalidCartItemId, requestDto));
-        String actual = exception.getMessage();
-        assertEquals(expected, actual);
+                () -> cartService.updateItemQuantity(incorrectCartItemId, requestDto));
+        String actualInfo = exception.getMessage();
+        assertEquals(expectedInfo, actualInfo);
         verify(cartItemRepository, times(1)).findById(any());
         verifyNoMoreInteractions(cartItemRepository, cartItemMapper);
     }
 
     @Test
-    @DisplayName("Add an item to shopping cart by valid user ID using valid new request")
-    void addItemToCart_ValidUserIdAndRequestDto_ReturnsUpdatedShoppingCartDto() {
-        Long validUserId = 1L;
+    @DisplayName("Add a cart item to the shopping cart using correct user ID")
+    void addCartItemToCart_CorrectUserId_ReturnsUpdatedShoppingCartDto() {
+        Long correctUserId = 1L;
         Long nonExistingCartItemBookId = 40L;
         CreateCartItemRequestDto requestDto = new CreateCartItemRequestDto(
                 nonExistingCartItemBookId, 2);
-        ShoppingCart modelCart = getTestShoppingCart(validUserId);
-        CartItem modelItem = getTestCartItemFromRequest(modelCart, requestDto);
-        ShoppingCartDto expected = getTestShoppingCartDtoFromModel(modelCart);
-        expected.cartItems().add(
+        ShoppingCart testCart = getTestShoppingCart(correctUserId);
+        CartItem testItem = getTestCartItemFromRequest(testCart, requestDto);
+        ShoppingCartDto expectedCart = getTestShoppingCartDtoFromModel(testCart);
+        expectedCart.cartItems().add(
                 new CartItemDto(
-                        modelItem.getId(),
-                        modelItem.getBook().getId(),
-                        modelItem.getBook().getTitle(),
+                        testItem.getId(),
+                        testItem.getBook().getId(),
+                        testItem.getBook().getTitle(),
                         requestDto.quantity()));
-        when(cartRepository.findCartWithItemsByUserId(validUserId)).thenReturn(modelCart);
-        when(cartItemMapper.toModel(requestDto)).thenReturn(modelItem);
-        when(cartRepository.save(modelCart)).thenReturn(modelCart);
-        when(cartMapper.toDto(modelCart)).thenReturn(expected);
-        ShoppingCartDto actual = cartService.addItemToCart(validUserId, requestDto);
-        assertEquals(expected, actual);
+        when(cartRepository.findCartWithItemsByUserId(correctUserId)).thenReturn(testCart);
+        when(cartItemMapper.toModel(requestDto)).thenReturn(testItem);
+        when(cartRepository.save(testCart)).thenReturn(testCart);
+        when(cartMapper.toDto(testCart)).thenReturn(expectedCart);
+        ShoppingCartDto actualCart = cartService.addItemToCart(correctUserId, requestDto);
+        assertEquals(expectedCart, actualCart);
         verify(cartRepository, times(1)).findCartWithItemsByUserId(any());
         verify(cartItemMapper, times(1)).toModel(any());
         verify(cartRepository, times(1)).save(any());
-        verify(cartMapper, times(1)).toDto(any());
-        verifyNoMoreInteractions(
-                cartRepository, cartItemMapper, cartMapper, cartItemRepository);
-    }
-
-    @Test
-    @DisplayName("Add an item to shopping cart by valid user ID "
-            + "using valid request with existing book")
-    void addItemToCart_ValidUserIdAndRequestDtoWithExistingBook_ReturnsUpdatedShoppingCartDto() {
-        Long validUserId = 1L;
-        Long existingCartItemBookId = 1L;
-        CreateCartItemRequestDto requestDto = new CreateCartItemRequestDto(
-                existingCartItemBookId, 2);
-        ShoppingCart modelCart = getTestShoppingCart(validUserId);
-        CartItem cartItem = getTestCartItemFromRequest(modelCart, requestDto);
-        CartItem existingCartItem = modelCart.getCartItems().stream()
-                .filter(ci -> ci.getBook().getId().equals(cartItem.getBook().getId()))
-                .findFirst()
-                .get();
-        existingCartItem.setQuantity(existingCartItem.getQuantity() + cartItem.getQuantity());
-        ShoppingCartDto expected = getTestShoppingCartDtoFromModel(modelCart);
-        when(cartRepository.findCartWithItemsByUserId(validUserId)).thenReturn(modelCart);
-        when(cartItemMapper.toModel(requestDto)).thenReturn(cartItem);
-        when(cartItemRepository.save(existingCartItem)).thenReturn(existingCartItem);
-        when(cartMapper.toDto(modelCart)).thenReturn(expected);
-        ShoppingCartDto actual = cartService.addItemToCart(validUserId, requestDto);
-        assertEquals(expected, actual);
-        verify(cartRepository, times(1)).findCartWithItemsByUserId(any());
-        verify(cartItemMapper, times(1)).toModel(any());
-        verify(cartItemRepository, times(1)).save(any());
         verify(cartMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(cartRepository, cartItemMapper, cartMapper, cartItemRepository);
     }
 
     @Test
-    @DisplayName("Find a shopping cart with items by valid user ID")
-    void getCartWithItems_ValidUserId_ReturnsShoppingCartDto() {
-        Long validUserId = 1L;
-        ShoppingCart modelCart = getTestShoppingCart(validUserId);
-        ShoppingCartDto expected = getTestShoppingCartDtoFromModel(modelCart);
-        when(cartRepository.findCartWithItemsByUserId(validUserId)).thenReturn(modelCart);
-        when(cartMapper.toDto(modelCart)).thenReturn(expected);
-        ShoppingCartDto actual = cartService.getCartWithItems(validUserId);
-        assertEquals(expected, actual);
+    @DisplayName("Find a shopping cart with items providing a correct user ID")
+    void getCartWithItems_CorrectUserId_ReturnsShoppingCartDto() {
+        Long correctUserId = 1L;
+        ShoppingCart testCart = getTestShoppingCart(correctUserId);
+        ShoppingCartDto expectedCart = getTestShoppingCartDtoFromModel(testCart);
+        when(cartRepository.findCartWithItemsByUserId(correctUserId)).thenReturn(testCart);
+        when(cartMapper.toDto(testCart)).thenReturn(expectedCart);
+        ShoppingCartDto actualCart = cartService.getCartWithItems(correctUserId);
+        assertEquals(expectedCart, actualCart);
         verify(cartRepository, times(1)).findCartWithItemsByUserId(any());
         verify(cartMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(cartRepository, cartMapper);

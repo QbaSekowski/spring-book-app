@@ -54,104 +54,103 @@ public class BookServiceTest {
     private BookServiceImpl bookService;
 
     @Test
-    @DisplayName("Save a new book with valid request - Returns saved book DTO")
-    void save_ValidCreateBookRequestDto_ReturnsBookDto() {
+    @DisplayName("Return book DTO after correct saving of a new book")
+    void save_CorrectCreateBookRequestDto_ReturnsBookDto() {
         CreateBookRequestDto requestDto = createTestCreateBookRequestDto(
-                "66565-878787", new BigDecimal("15.80"), Set.of(1L, 2L));
-        Book modelBook = createTestBook(
+                "66565-878787", new BigDecimal("21.50"), Set.of(1L, 2L));
+        Book testBook = createTestBook(
                 1L, requestDto.isbn(), requestDto.price(), requestDto.categoryIds());
-        BookDto expected = createTestBookDto(modelBook);
-        when(bookMapper.toModel(requestDto)).thenReturn(modelBook);
-        when(bookRepository.save(modelBook)).thenReturn(modelBook);
-        when(bookMapper.toDto(modelBook)).thenReturn(expected);
-        BookDto actual = bookService.save(requestDto);
-        assertEquals(expected, actual);
-        verify(bookRepository, times(1)).save(any());
+        BookDto expectedBook = createTestBookDto(testBook);
+        when(bookMapper.toModel(requestDto)).thenReturn(testBook);
+        when(bookRepository.save(testBook)).thenReturn(testBook);
+        when(bookMapper.toDto(testBook)).thenReturn(expectedBook);
+        BookDto actualBook = bookService.save(requestDto);
+        assertEquals(expectedBook, actualBook);
         verify(bookMapper, times(1)).toDto(any());
+        verify(bookRepository, times(1)).save(any());
         verify(bookMapper, times(1)).toModel(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
-    @DisplayName("Find all books with valid pageable"
-            + " - Returns all books DTOs without category IDs")
-    void findAll_ValidPageable_ReturnsAllBookDtoWithoutCategoryIds() {
-        Book modelBook = createTestBook(1L, "66565-878787", new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
-        Book modelBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("16.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
+    @DisplayName("Return all books with correct pageable")
+    void findAll_CorrectPageable_ReturnsAllBookDtoWithNoCategories() {
+        Book testBook1 = createTestBook(1L, "66565-878787", new BigDecimal("17.80"), Set.of(1L));
+        BookDtoWithoutCategoryIds testBookDto = createTestBookDtoWithoutCategories(testBook1);
+        Book testBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("14.10"), Set.of(1L));
+        BookDtoWithoutCategoryIds testBookDto2 = createTestBookDtoWithoutCategories(testBook2);
         Pageable pageable = PageRequest.of(0, 10);
-        List<Book> books = List.of(modelBook, modelBook2);
-        PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
-        when(bookRepository.findAll(pageable)).thenReturn(booksPage);
-        when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(bookDto);
-        when(bookMapper.toDtoWithoutCategories(modelBook2)).thenReturn(bookDto2);
-        List<BookDtoWithoutCategoryIds> expected = List.of(bookDto, bookDto2);
-        List<BookDtoWithoutCategoryIds> actual = bookService.findAll(pageable);
-        assertEquals(2, actual.size());
-        assertEquals(expected, actual);
+        List<Book> listOfTestBooks = List.of(testBook1, testBook2);
+        PageImpl<Book> testBooksPage = new PageImpl<>(listOfTestBooks, pageable, listOfTestBooks.size());
+        when(bookRepository.findAll(pageable)).thenReturn(testBooksPage);
+        when(bookMapper.toDtoWithoutCategories(testBook1)).thenReturn(testBookDto);
+        when(bookMapper.toDtoWithoutCategories(testBook2)).thenReturn(testBookDto2);
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = List.of(testBookDto, testBookDto2);
+        List<BookDtoWithoutCategoryIds> actualListOfBooks = bookService.findAll(pageable);
+        assertEquals(2, actualListOfBooks.size());
+        assertEquals(expectedListOfBooks, actualListOfBooks);
         verify(bookRepository, times(1)).findAll(pageable);
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
-    @DisplayName("Find book by valid ID - Returns book DTO without category IDs")
-    void findById_ValidId_ReturnsBookDtoWithoutCategoryIds() {
-        Long validId = 1L;
-        Book modelBook = createTestBook(validId, "66565-878787",
-                new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds expected = createTestBookDtoWithoutCategories(modelBook);
-        when(bookRepository.findById(validId)).thenReturn(Optional.of(modelBook));
-        when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(expected);
-        BookDtoWithoutCategoryIds actual = bookService.findById(validId);
-        assertNotNull(actual);
-        assertEquals(expected, actual);
+    @DisplayName("Find a book providing correct book ID")
+    void findById_CorrectId_ReturnsBookDtoWithNoCategories() {
+        Long correctBookId = 1L;
+        Book testBook = createTestBook(correctBookId, "66565-878787",
+                new BigDecimal("19.50"), Set.of(1L));
+        BookDtoWithoutCategoryIds expectedBook = createTestBookDtoWithoutCategories(testBook);
+        when(bookRepository.findById(correctBookId)).thenReturn(Optional.of(testBook));
+        when(bookMapper.toDtoWithoutCategories(testBook)).thenReturn(expectedBook);
+        BookDtoWithoutCategoryIds actualBook = bookService.findById(correctBookId);
+        assertNotNull(actualBook);
+        assertEquals(expectedBook, actualBook);
         verify(bookRepository, times(1)).findById(any());
         verify(bookMapper, times(1)).toDtoWithoutCategories(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
-    @DisplayName("Find book by invalid ID - Throws EntityNotFoundException")
+    @DisplayName("Try to find a book with incorrect ID and throw EntityNotFoundException")
     void findById_InvalidId_ThrowsEntityNotFoundException() {
-        Long invalidId = 10L;
-        when(bookRepository.findById(invalidId)).thenReturn(Optional.empty());
-        String expected = "Can't find book by id: " + invalidId;
+        Long incorrectBookId = 30L;
+        when(bookRepository.findById(incorrectBookId)).thenReturn(Optional.empty());
+        String expectedInfo = "Can't find book by id: " + incorrectBookId;
         EntityNotFoundException exception =
-                assertThrows(EntityNotFoundException.class, () -> bookService.findById(invalidId));
-        String actual = exception.getMessage();
-        assertEquals(expected, actual);
+                assertThrows(EntityNotFoundException.class, () -> bookService.findById(incorrectBookId));
+        String actualInfo = exception.getMessage();
+        assertEquals(expectedInfo, actualInfo);
         verify(bookRepository, times(1)).findById(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
     @Test
-    @DisplayName("Search books with valid pageable and search parameters"
-            + " - Returns matching books DTOs without category IDs")
-    void search_ValidPageableAndSearchParameters_ReturnsAllMatchingBookDtoWithoutCategoryIds() {
-        Book modelBook = createTestBook(1L, "66565-878787", new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
-        Book modelBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("24.70"), Set.of(2L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
-        String minPrice = "10.00";
-        String maxPrice = "25.00";
+    @DisplayName("Search books with correct search parameters")
+    void search_CorrectSearchParameters_ReturnsCorrectMatchingBookDtoWithNoCategories() {
+        Book testBook1 = createTestBook(1L, "66565-878787", new BigDecimal("10.40"), Set.of(1L));
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(testBook1);
+        Book testBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("25.40"), Set.of(2L));
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(testBook2);
+        String minPrice = "5.00";
+        String maxPrice = "30.00";
         BookSearchParametersDto bookSearchParametersDto = new BookSearchParametersDto(
-                null, null, null, "10", "15");
+                null, null, null, minPrice, maxPrice);
         Specification<Book> specification = Specification.where(new PriceSpecificationProvider()
                 .getSpecification(new String[]{minPrice, maxPrice}));
         Pageable pageable = PageRequest.of(0, 10);
-        List<Book> books = List.of(modelBook, modelBook2);
-        PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
+        List<Book> listOfTestBooks = List.of(testBook1, testBook2);
+        PageImpl<Book> booksPage = new PageImpl<>(listOfTestBooks, pageable, listOfTestBooks.size());
         when(bookSpecificationBuilder.build(bookSearchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, pageable)).thenReturn(booksPage);
-        when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(bookDto);
-        when(bookMapper.toDtoWithoutCategories(modelBook2)).thenReturn(bookDto2);
-        List<BookDtoWithoutCategoryIds> expected = List.of(bookDto, bookDto2);
-        List<BookDtoWithoutCategoryIds> actual =
+        when(bookMapper.toDtoWithoutCategories(testBook1)).thenReturn(bookDto);
+        when(bookMapper.toDtoWithoutCategories(testBook2)).thenReturn(bookDto2);
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = List.of(bookDto, bookDto2);
+        List<BookDtoWithoutCategoryIds> actualListOfBooks =
                 bookService.search(bookSearchParametersDto, pageable);
-        assertEquals(2, actual.size());
-        assertEquals(expected, actual);
+        int expectedNumberOfBooks = 2;
+        assertEquals(expectedNumberOfBooks, actualListOfBooks.size());
+        assertEquals(expectedListOfBooks, actualListOfBooks);
         verify(bookSpecificationBuilder, times(1)).build(any());
         verify(bookRepository, times(1)).findAll(specification, pageable);
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
@@ -159,30 +158,30 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Search books with valid pageable and empty search parameters"
-            + " - Returns all books DTOs without category IDs")
-    void search_ValidPageableAndEmptySearchParameters_ReturnsAllBookDtoWithoutCategoryIds() {
-        Book modelBook = createTestBook(1L, "66565-878787",
-                new BigDecimal("11.70"), Set.of(1L));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
-        Book modelBook2 = createTestBook(2L, "66565-878787-1",
+    @DisplayName("Search books with empty search parameters")
+    void search_CorrectEmptySearchParameters_ReturnsAllBookDtoWithNoCategories() {
+        Book testBook1 = createTestBook(1L, "66565-878787",
+                new BigDecimal("10.40"), Set.of(1L));
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(testBook1);
+        Book testBook2 = createTestBook(2L, "66565-878787-1",
                 new BigDecimal("244.70"), Set.of(32L));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(testBook2);
         BookSearchParametersDto bookSearchParametersDto = new BookSearchParametersDto(
                 null, null, null, null, null);
         Specification<Book> specification = Specification.where(null);
         Pageable pageable = PageRequest.of(0, 10);
-        List<Book> books = List.of(modelBook, modelBook2);
-        PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
+        List<Book> listOfTestBooks = List.of(testBook1, testBook2);
+        PageImpl<Book> booksPage = new PageImpl<>(listOfTestBooks, pageable, listOfTestBooks.size());
         when(bookSpecificationBuilder.build(bookSearchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, pageable)).thenReturn(booksPage);
-        when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(bookDto);
-        when(bookMapper.toDtoWithoutCategories(modelBook2)).thenReturn(bookDto2);
-        List<BookDtoWithoutCategoryIds> expected = List.of(bookDto, bookDto2);
-        List<BookDtoWithoutCategoryIds> actual =
+        when(bookMapper.toDtoWithoutCategories(testBook1)).thenReturn(bookDto);
+        when(bookMapper.toDtoWithoutCategories(testBook2)).thenReturn(bookDto2);
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = List.of(bookDto, bookDto2);
+        List<BookDtoWithoutCategoryIds> actualListOfBooks =
                 bookService.search(bookSearchParametersDto, pageable);
-        assertEquals(2, actual.size());
-        assertEquals(expected, actual);
+        int expectedNumberOfBooks = 2;
+        assertEquals(expectedNumberOfBooks, actualListOfBooks.size());
+        assertEquals(expectedListOfBooks, actualListOfBooks);
         verify(bookSpecificationBuilder, times(1)).build(any());
         verify(bookRepository, times(1)).findAll(specification, pageable);
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
@@ -190,20 +189,19 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Update book by valid ID and request"
-            + " (or create new when ID doesn't exist) - Returns updated or created book DTO")
-    void updateById_ValidIdAndCreateBookRequestDto_ReturnsUpdatedBook() {
-        Long validId = 3L;
+    @DisplayName("Update a book successfully or create a new one")
+    void updateBookById_CorrectIdAndCreateBookRequestDto_ReturnsUpdatedBook() {
+        Long correctBookId = 3L;
         CreateBookRequestDto requestDto = createTestCreateBookRequestDto(
-                "66565-878787", new BigDecimal("15.80"), Set.of(1L, 2L));
-        Book modelBook = createTestBook(
-                validId, requestDto.isbn(), requestDto.price(), requestDto.categoryIds());
-        BookDto expected = createTestBookDto(modelBook);
-        when(bookMapper.toModel(requestDto)).thenReturn(modelBook);
-        when(bookRepository.save(modelBook)).thenReturn(modelBook);
-        when(bookMapper.toDto(modelBook)).thenReturn(expected);
-        BookDto actual = bookService.updateById(validId, requestDto);
-        assertEquals(expected, actual);
+                "66565-878787", new BigDecimal("16.20"), Set.of(1L, 2L));
+        Book testBook = createTestBook(
+                correctBookId, requestDto.isbn(), requestDto.price(), requestDto.categoryIds());
+        BookDto expectedBook = createTestBookDto(testBook);
+        when(bookMapper.toModel(requestDto)).thenReturn(testBook);
+        when(bookRepository.save(testBook)).thenReturn(testBook);
+        when(bookMapper.toDto(testBook)).thenReturn(expectedBook);
+        BookDto actualBook = bookService.updateById(correctBookId, requestDto);
+        assertEquals(expectedBook, actualBook);
         verify(bookRepository, times(1)).save(any());
         verify(bookMapper, times(1)).toDto(any());
         verify(bookMapper, times(1)).toModel(any());
@@ -211,80 +209,79 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Find all books by category ID with valid category ID and pageable"
-            + " - Returns all books DTOs without category IDs")
-    void findAllByCategoryId_ValidCategoryIdAndPageable_ReturnsBookDtoWithoutCategoryIds() {
-        Long validCategoryId = 1L;
-        Book modelBook = createTestBook(
-                1L, "66565-878787", new BigDecimal("11.70"), Set.of(validCategoryId));
-        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(modelBook);
-        Book modelBook2 = createTestBook(
-                2L, "66565-878787-1", new BigDecimal("19.70"), Set.of(validCategoryId));
-        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(modelBook2);
+    @DisplayName("Find all books providing a correct category ID")
+    void findAllBooksByCategoryId_CorrectCategoryId_ReturnsBookDtoWithNoCategories() {
+        Long correctCategoryId = 1L;
+        Book testBook = createTestBook(
+                1L, "66565-878787", new BigDecimal("14.60"), Set.of(correctCategoryId));
+        BookDtoWithoutCategoryIds bookDto = createTestBookDtoWithoutCategories(testBook);
+        Book testBook2 = createTestBook(
+                2L, "66565-878787-1", new BigDecimal("25.70"), Set.of(correctCategoryId));
+        BookDtoWithoutCategoryIds bookDto2 = createTestBookDtoWithoutCategories(testBook2);
         Pageable pageable = PageRequest.of(0, 10);
-        List<Book> books = List.of(modelBook, modelBook2);
-        PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
-        when(bookRepository.findAllBooksHavingCategoryById(validCategoryId, pageable)).thenReturn(booksPage);
-        when(bookMapper.toDtoWithoutCategories(modelBook)).thenReturn(bookDto);
-        when(bookMapper.toDtoWithoutCategories(modelBook2)).thenReturn(bookDto2);
-        List<BookDtoWithoutCategoryIds> expected = List.of(bookDto, bookDto2);
-        List<BookDtoWithoutCategoryIds> actual =
-                bookService.findAllByCategoryId(validCategoryId, pageable);
-        assertEquals(2, actual.size());
-        assertEquals(expected, actual);
+        List<Book> listOfTestBooks = List.of(testBook, testBook2);
+        PageImpl<Book> booksPage = new PageImpl<>(listOfTestBooks, pageable, listOfTestBooks.size());
+        when(bookRepository.findAllBooksHavingCategoryById(correctCategoryId, pageable)).thenReturn(booksPage);
+        when(bookMapper.toDtoWithoutCategories(testBook)).thenReturn(bookDto);
+        when(bookMapper.toDtoWithoutCategories(testBook2)).thenReturn(bookDto2);
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks = List.of(bookDto, bookDto2);
+        List<BookDtoWithoutCategoryIds> actualListOfBooks =
+                bookService.findAllByCategoryId(correctCategoryId, pageable);
+        assertEquals(2, actualListOfBooks.size());
+        assertEquals(expectedListOfBooks, actualListOfBooks);
         verify(bookRepository, times(1)).findAllBooksHavingCategoryById(any(), eq(pageable));
         verify(bookMapper, times(2)).toDtoWithoutCategories(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
-    @DisplayName("Find book by ID with categories by valid ID - Returns book DTO")
-    void findByIdWithCategories_ValidId_ReturnsBookDto() {
-        Long validId = 1L;
-        Book modelBook = createTestBook(validId, "66565-878787",
-                new BigDecimal("11.70"), Set.of(1L));
-        BookDto expected = createTestBookDto(modelBook);
-        when(bookRepository.findBookByIdHavingCategories(validId)).thenReturn(Optional.of(modelBook));
-        when(bookMapper.toDto(modelBook)).thenReturn(expected);
-        BookDto actual = bookService.findByIdWithCategories(validId);
-        assertEquals(expected, actual);
+    @DisplayName("Find book by providing correct ID")
+    void findBookByIdWithCategories_CorrectId_ReturnsBookDto() {
+        Long correctId = 1L;
+        Book testBook = createTestBook(correctId, "66565-878787",
+                new BigDecimal("14.20"), Set.of(1L));
+        BookDto expectedBook = createTestBookDto(testBook);
+        when(bookRepository.findBookByIdHavingCategories(correctId)).thenReturn(Optional.of(testBook));
+        when(bookMapper.toDto(testBook)).thenReturn(expectedBook);
+        BookDto actualBook = bookService.findByIdWithCategories(correctId);
+        assertEquals(expectedBook, actualBook);
         verify(bookRepository, times(1)).findBookByIdHavingCategories(any());
         verify(bookMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);
     }
 
     @Test
-    @DisplayName("Find book by ID with categories by invalid ID - Throws EntityNotFoundException")
-    void findByIdWithCategories_InvalidId_ThrowsEntityNotFoundException() {
-        Long invalidId = 10L;
-        when(bookRepository.findBookByIdHavingCategories(invalidId)).thenReturn(Optional.empty());
-        String expected = "Can't find book by id: " + invalidId;
+    @DisplayName("Find book by providing incorrect ID and throw EntityNotFoundException")
+    void findBookByIdWithCategories_IncorrectId_ThrowsEntityNotFoundException() {
+        Long incorrectId = 70L;
+        when(bookRepository.findBookByIdHavingCategories(incorrectId)).thenReturn(Optional.empty());
+        String expectedInfo = "Can't find book by id: " + incorrectId;
         EntityNotFoundException exception = assertThrows(
                 EntityNotFoundException.class,
-                () -> bookService.findByIdWithCategories(invalidId));
-        String actual = exception.getMessage();
-        assertEquals(expected, actual);
+                () -> bookService.findByIdWithCategories(incorrectId));
+        String actualInfo = exception.getMessage();
+        assertEquals(expectedInfo, actualInfo);
         verify(bookRepository, times(1)).findBookByIdHavingCategories(any());
         verifyNoMoreInteractions(bookRepository);
     }
 
     @Test
-    @DisplayName("Find all books with categories with valid pageable - Returns all books DTOs")
-    void findAllWithCategories_ValidPageable_ReturnsAllBookDto() {
-        Book modelBook = createTestBook(1L, "66565-878787", new BigDecimal("11.70"), Set.of(1L));
-        BookDto bookDto = createTestBookDto(modelBook);
-        Book modelBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("21.70"), Set.of(2L));
-        BookDto bookDto2 = createTestBookDto(modelBook2);
+    @DisplayName("Find all books with categories")
+    void findAllBooksWithCategories_CorrectPageable_ReturnsAllBookDto() {
+        Book testBooks1 = createTestBook(1L, "66565-878787", new BigDecimal("18.40"), Set.of(1L));
+        BookDto bookDto = createTestBookDto(testBooks1);
+        Book testBook2 = createTestBook(2L, "66565-878787-1", new BigDecimal("26.10"), Set.of(2L));
+        BookDto bookDto2 = createTestBookDto(testBook2);
         Pageable pageable = PageRequest.of(0, 10);
-        List<Book> books = List.of(modelBook, modelBook2);
-        PageImpl<Book> booksPage = new PageImpl<>(books, pageable, books.size());
+        List<Book> listOfTestBooks = List.of(testBooks1, testBook2);
+        PageImpl<Book> booksPage = new PageImpl<>(listOfTestBooks, pageable, listOfTestBooks.size());
         when(bookRepository.findAllBooksHavingCategories(pageable)).thenReturn(booksPage);
-        when(bookMapper.toDto(modelBook)).thenReturn(bookDto);
-        when(bookMapper.toDto(modelBook2)).thenReturn(bookDto2);
-        List<BookDto> expected = List.of(bookDto, bookDto2);
-        List<BookDto> actual = bookService.findAllWithCategories(pageable);
-        assertEquals(2, actual.size());
-        assertEquals(expected, actual);
+        when(bookMapper.toDto(testBooks1)).thenReturn(bookDto);
+        when(bookMapper.toDto(testBook2)).thenReturn(bookDto2);
+        List<BookDto> expectedListOfTestBooks = List.of(bookDto, bookDto2);
+        List<BookDto> actualListOfTestBooks = bookService.findAllWithCategories(pageable);
+        assertEquals(2, actualListOfTestBooks.size());
+        assertEquals(expectedListOfTestBooks, actualListOfTestBooks);
         verify(bookRepository, times(1)).findAllBooksHavingCategories(pageable);
         verify(bookMapper, times(2)).toDto(any());
         verifyNoMoreInteractions(bookRepository, bookMapper);

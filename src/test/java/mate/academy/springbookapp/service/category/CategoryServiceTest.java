@@ -36,48 +36,48 @@ public class CategoryServiceTest {
     private CategoryServiceImpl categoryService;
 
     @Test
-    @DisplayName("Find category by invalid ID - Throws EntityNotFoundException")
-    void findById_InvalidId_ThrowsEntityNotFoundException() {
-        Long invalidId = 100L;
-        String expected = "Can't find category with id: " + invalidId;
-        when(categoryRepository.findById(invalidId)).thenReturn(Optional.empty());
+    @DisplayName("Find category by providing incorrect ID and throw EntityNotFoundException")
+    void findCategoryById_IncorrectId_ThrowsEntityNotFoundException() {
+        Long incorrectId = 100L;
+        String expectedInfo = "Can't find category with id: " + incorrectId;
+        when(categoryRepository.findById(incorrectId)).thenReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(
-                EntityNotFoundException.class, () -> categoryService.getById(invalidId));
-        String actual = exception.getMessage();
-        assertEquals(expected, actual);
+                EntityNotFoundException.class, () -> categoryService.getById(incorrectId));
+        String actualInfo = exception.getMessage();
+        assertEquals(expectedInfo, actualInfo);
         verify(categoryRepository, times(1)).findById(any());
         verifyNoMoreInteractions(categoryRepository, categoryMapper);
     }
 
     @Test
-    @DisplayName("Find category by valid ID - Returns category DTO")
-    void findById_ValidId_ReturnsCategoryDto() {
-        Long validId = 1L;
-        Category modelCategory = createTestCategory(validId, CATEGORY_NAME);
-        CategoryDto expected =
-                createTestCategoryDto(modelCategory.getId(), modelCategory.getName());
-        when(categoryRepository.findById(validId)).thenReturn(Optional.of(modelCategory));
-        when(categoryMapper.toDto(modelCategory)).thenReturn(expected);
-        CategoryDto actual = categoryService.getById(validId);
-        assertNotNull(actual);
-        assertEquals(expected, actual);
+    @DisplayName("Find category by providing correct ID")
+    void findCategoryById_CorrectId_ReturnsCategoryDto() {
+        Long correctId = 1L;
+        Category testCategory = createTestCategory(correctId, CATEGORY_NAME);
+        CategoryDto expectedCategory =
+                createTestCategoryDto(testCategory.getId(), testCategory.getName());
+        when(categoryRepository.findById(correctId)).thenReturn(Optional.of(testCategory));
+        when(categoryMapper.toDto(testCategory)).thenReturn(expectedCategory);
+        CategoryDto actualCategory = categoryService.getById(correctId);
+        assertNotNull(actualCategory);
+        assertEquals(expectedCategory, actualCategory);
         verify(categoryRepository, times(1)).findById(any());
         verify(categoryMapper, times(1)).toDto(any());
         verifyNoMoreInteractions(categoryRepository, categoryMapper);
     }
 
     @Test
-    @DisplayName("Save new category with valid request - Returns saved category DTO")
-    void save_ValidCreateCategoryRequestDto_ReturnsCategoryDto() {
+    @DisplayName("Save a new category successfully")
+    void save_CorrectCreateCategoryRequestDto_ReturnsCategoryDto() {
         CreateCategoryRequestDto requestDto = createTestCreateCategoryRequestDto();
-        Category modelCategory = createTestCategory(1L, requestDto.name());
-        CategoryDto expected =
-                createTestCategoryDto(modelCategory.getId(), modelCategory.getName());
-        when(categoryMapper.toModel(requestDto)).thenReturn(modelCategory);
-        when(categoryRepository.save(modelCategory)).thenReturn(modelCategory);
-        when(categoryMapper.toDto(modelCategory)).thenReturn(expected);
-        CategoryDto actual = categoryService.save(requestDto);
-        assertEquals(expected, actual);
+        Category testCategory = createTestCategory(1L, requestDto.name());
+        CategoryDto expectedCategory =
+                createTestCategoryDto(testCategory.getId(), testCategory.getName());
+        when(categoryMapper.toModel(requestDto)).thenReturn(testCategory);
+        when(categoryRepository.save(testCategory)).thenReturn(testCategory);
+        when(categoryMapper.toDto(testCategory)).thenReturn(expectedCategory);
+        CategoryDto actualCategory = categoryService.save(requestDto);
+        assertEquals(expectedCategory, actualCategory);
         verify(categoryMapper, times(1)).toModel(any());
         verify(categoryRepository, times(1)).save(any());
         verify(categoryMapper, times(1)).toDto(any());
@@ -85,19 +85,18 @@ public class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Update category by valid ID and request "
-            + "(or create new when ID doesn't exist) - Returns updated or created category DTO")
-    void update_ValidCreateCategoryRequestDto_ReturnsCategoryDto() {
-        Long newId = 10L;
+    @DisplayName("Update category successfully or create a new one")
+    void update_CorrectCreateCategoryRequestDto_ReturnsCategoryDto() {
+        Long categoryId = 15L;
         CreateCategoryRequestDto requestDto = createTestCreateCategoryRequestDto();
-        Category modelCategory = createTestCategory(newId, requestDto.name());
-        CategoryDto expected =
-                createTestCategoryDto(modelCategory.getId(), modelCategory.getName());
-        when(categoryMapper.toModel(requestDto)).thenReturn(modelCategory);
-        when(categoryRepository.save(modelCategory)).thenReturn(modelCategory);
-        when(categoryMapper.toDto(modelCategory)).thenReturn(expected);
-        CategoryDto actual = categoryService.update(newId, requestDto);
-        assertEquals(expected, actual);
+        Category testCategory = createTestCategory(categoryId, requestDto.name());
+        CategoryDto expectedCategory =
+                createTestCategoryDto(testCategory.getId(), testCategory.getName());
+        when(categoryMapper.toModel(requestDto)).thenReturn(testCategory);
+        when(categoryRepository.save(testCategory)).thenReturn(testCategory);
+        when(categoryMapper.toDto(testCategory)).thenReturn(expectedCategory);
+        CategoryDto actualCategory = categoryService.update(categoryId, requestDto);
+        assertEquals(expectedCategory, actualCategory);
         verify(categoryMapper, times(1)).toModel(any());
         verify(categoryRepository, times(1)).save(any());
         verify(categoryMapper, times(1)).toDto(any());

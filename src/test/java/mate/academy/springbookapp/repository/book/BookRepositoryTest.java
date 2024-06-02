@@ -87,7 +87,8 @@ public class BookRepositoryTest {
     void findAllByCategoryId_CorrectCategoryId_ReturnsTwoBooks() {
         Long correctCategoryId = 1L;
         int expectedNumber = 2;
-        List<Book> actualListOfBooks = bookRepository.findAllBooksHavingCategoryById(correctCategoryId,
+        List<Book> actualListOfBooks
+                = bookRepository.findAllBooksHavingCategoryById(correctCategoryId,
                         PageRequest.of(0, 10))
                 .stream()
                 .toList();

@@ -73,8 +73,8 @@ public class ShoppingCartServiceTest {
     }
 
     @Test
-    @DisplayName("Unsuccessfully update quantity of a cart item by providing incorrect cart item ID "
-            + "and throw EntityNotFoundException")
+    @DisplayName("Unsuccessfully update quantity of a cart item "
+            + "by providing incorrect cart item ID and throw EntityNotFoundException")
     void updateCartItemQuantity_IncorrectCartItemId_ThrowsEntityNotFoundException() {
         Long incorrectCartItemId = 40L;
         UpdateCartItemRequestDto requestDto = new UpdateCartItemRequestDto(10);

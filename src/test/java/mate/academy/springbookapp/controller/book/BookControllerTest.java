@@ -151,7 +151,8 @@ public class BookControllerTest {
     @Test
     void search_CorrectSearchParameters_ReturnsTwoCorrectBooksDtoWithNoCategories()
             throws Exception {
-        List<BookDtoWithoutCategoryIds> expectedListOfBooks = getTwoCorrectBooksDtoWithNoCategories();
+        List<BookDtoWithoutCategoryIds> expectedListOfBooks
+                = getTwoCorrectBooksDtoWithNoCategories();
         BookSearchParametersDto searchParameters = new BookSearchParametersDto(
                 null, null, null, "35", "50");
         MvcResult result = mockMvc.perform(

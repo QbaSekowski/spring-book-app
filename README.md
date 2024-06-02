@@ -11,15 +11,15 @@ The service includes a convenient book search by categories for quick access to 
 - **JWT** (JSON Web Token): A compact and self-contained method for securely transmitting information between parties as a JSON object.
 - **Spring Data JPA**: A data access framework that streamlines database operations by eliminating boilerplate code.
 - **Mapstruct**: A code generator that facilitates the mapping between Data Transfer Objects (DTOs) and entities.
-- **Lombok**: A Java library that reduces boilerplate code, enhancing code readability and maintainability.
 - **Maven**: A build automation tool that manages project dependencies and streamlines the build process.
 - **Liquibase**: A version control system for database changes, ensuring consistency across environments.
 - **Jackson**: A library that enables efficient JSON parsing and generation in Java applications.
 - **Swagger**: A toolkit for generating interactive API documentation, enhancing developer interaction with the API.
+- **Lombok**: A Java library that reduces boilerplate code, enhancing code readability and maintainability.
 - **MySQL**: A relational database management system used for storing and managing application data.
-- **Docker**: A platform for developing, shipping, and running applications within containers, ensuring consistency across environments.
-- **JUnit 5**: A modern testing framework for writing and executing unit tests in Java.
 - **Mockito**: A testing framework that allows the creation of mock objects for effective unit testing.
+- **JUnit 5**: A modern testing framework for writing and executing unit tests in Java.
+- **Docker**: A platform for developing, shipping, and running applications within containers, ensuring consistency across environments.
 
 ## Layered Architecture
 - **Controller Layer**: Handles incoming HTTP requests and communicates with clients. Controllers contain methods that process these requests and call the necessary services to execute business operations.
@@ -41,7 +41,7 @@ The service includes a convenient book search by categories for quick access to 
 - **Order Item**: A component of an order that details the specific book purchased and the number of units bought.
 
 ## Access to endpoints
-🟩 - public  
+🟩 - for all users  
 🟨 - for logged users  
 🟥 - for admin
 

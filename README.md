@@ -5,21 +5,12 @@
 The service includes a convenient book search by categories for quick access to literary works. Users can create personal accounts to track their purchase history. Adding books to the cart and completing orders is straightforward and secure, providing a hassle-free shopping experience.
 ## Technologies Used in the project
 
-- **Java**: A versatile programming language serving as the core foundation for developing the project.
-- **Spring Boot**: A framework designed to simplify the creation of production-ready, standalone Java applications.
-- **Spring Security**: A powerful security framework providing comprehensive authentication and authorization solutions.
-- **JWT** (JSON Web Token): A compact and self-contained method for securely transmitting information between parties as a JSON object.
-- **Spring Data JPA**: A data access framework that streamlines database operations by eliminating boilerplate code.
-- **Mapstruct**: A code generator that facilitates the mapping between Data Transfer Objects (DTOs) and entities.
-- **Maven**: A build automation tool that manages project dependencies and streamlines the build process.
-- **Liquibase**: A version control system for database changes, ensuring consistency across environments.
-- **Jackson**: A library that enables efficient JSON parsing and generation in Java applications.
-- **Swagger**: A toolkit for generating interactive API documentation, enhancing developer interaction with the API.
-- **Lombok**: A Java library that reduces boilerplate code, enhancing code readability and maintainability.
-- **MySQL**: A relational database management system used for storing and managing application data.
-- **Mockito**: A testing framework that allows the creation of mock objects for effective unit testing.
-- **JUnit 5**: A modern testing framework for writing and executing unit tests in Java.
-- **Docker**: A platform for developing, shipping, and running applications within containers, ensuring consistency across environments.
+- Backend: Spring Framework (Spring Boot, Spring Security, Spring Data JPA), JWT, MySQL, Mapstruct, Jackson
+- Build Tool: Maven
+- Database Migration: Liquibase
+- Containerization: Docker
+- Testing: JUnit, Mockito, Test Containers
+- API Documentation: Swagger
 
 ## Layered Architecture
 - **Controller Layer**: Handles incoming HTTP requests and communicates with clients. Controllers contain methods that process these requests and call the necessary services to execute business operations.
@@ -31,48 +22,58 @@ The service includes a convenient book search by categories for quick access to 
 - **Test**: Encompasses unit and integration tests that validate the functionality and correctness of various application components, including controllers, services, and repositories.
 
 ### Database entities
-- **Book**: Represents a literary work with associated metadata such as title, author, publication year, and other pertinent details.
+- **Book**: Represents a literary work with associated metadata such as title, author and other pertinent details.
 - **Category**: A classification system for organizing books into various genres or subjects.
 - **Shopping Cart**: A temporary repository for products selected by a user for potential purchase, containing itemized details.
 - **Cart Item**: An individual entry within a shopping cart that specifies a particular book and its quantity.
 - **User**: An individual with a registered account on the platform, encompassing personal details and assigned permissions.
 - **Role**: A set of permissions assigned to a user, determining their access level and capabilities within the system, such as USER or ADMIN.
-- **Order**: A record of a completed transaction, capturing details of the purchase, including items bought, payment information, and delivery specifics.
+- **Order**: A record of a completed transaction, capturing details of the purchase, including items bought and delivery specifics.
 - **Order Item**: A component of an order that details the specific book purchased and the number of units bought.
 
-## Access to endpoints
-🟩 - for all users  
-🟨 - for logged users  
-🟥 - for admin
-
 ### User
-- 🟩 **POST**: /api/auth/registration - User Registration: Customers can sign up by providing their email, password, and personal information.
-- 🟩 **POST**: /api/auth/login - User Authentication: Registered users can securely log in.
+Public access
+- **POST**: /api/auth/registration - Customers can sign up by providing their email, password.
+- **POST**: /api/auth/login - Registered users can securely log in and receive their JWT token.
 ### Book
-- 🟨 **GET**: /api/books - Retrieve Book Catalog: Users have the ability to view the catalog of available books.
-- 🟨 **GET**: /api/books/{id} - View Book Details: Users can access detailed information about individual books.
-- 🟨 **GET**: /api/books/search - Search Books: Users can search for books using various criteria.
-- 🟥 **POST**: /api/books - Add New Book: Admins can add new books to the collection.
-- 🟥 **PUT**: /api/books/{id} - Update Book Details: Admins can modify the details of existing books.
-- 🟥 **DELETE**: /api/books/{id} - Delete Book: Admins can remove books from the catalog.
+
+Only for logged users:
+- **GET**: /api/books - Users have the ability to view the catalog of available books.
+- **GET**: /api/books/{id} - Users can access detailed information about individual books.
+- **GET**: /api/books/search - Users can search for books using various criteria.
+
+Only for the administrator:
+- **POST**: /api/books - Admins can add new books to the collection.
+- **PUT**: /api/books/{id} - Admins can modify the details of existing books.
+- **DELETE**: /api/books/{id} - Admins can remove books from the catalog.
 ### Category
-- 🟨 **GET**: /api/categories - Retrieve Categories: Users can view the list of all available categories.
-- 🟨 **GET**: /api/categories/{id} - View Category: Users can get detailed information about specific categories.
-- 🟨 **GET**: /api/categories/{id}/books - Get Books by Category: Users can see all books that belong to a particular category.
-- 🟥 **POST**: /api/categories - Create Category: Admins can create new book categories.
-- 🟥 **PUT**: /api/categories/{id} - Update Category: Admins can update information about existing categories.
-- 🟥 **DELETE**: /api/categories/{id} - Delete Category: Admins can delete categories from the list.
+
+Only for logged users:
+- **GET**: /api/categories - Users can view the list of all available categories.
+- **GET**: /api/categories/{id} - Users can get detailed information about specific categories.
+- **GET**: /api/categories/{id}/books - Users can see all books that belong to a particular category.
+
+Only for the administrator:
+- **POST**: /api/categories - Admins can create new book categories.
+- **PUT**: /api/categories/{id} - Admins can update information about existing categories.
+- **DELETE**: /api/categories/{id} - Admins can delete categories from the list.
 ### Shopping Cart
-- 🟨 **GET**: /api/cart - View Cart: Users can see what is in their shopping cart.
-- 🟨 **POST**: /api/cart - Add to Cart: Users can add books to their cart.
-- 🟨 **PUT**: /api/cart/cart-items/{id} - Update Cart: Users can change the quantity of items in their cart.
-- 🟨 **DELETE**: /api/cart/cart-items/{id} - Remove from Cart: Users can remove items from their cart.
+
+Only for logged users:
+- **GET**: /api/cart - Users can see what is in their shopping cart.
+- **POST**: /api/cart - Users can add books to their cart.
+- **PUT**: /api/cart/cart-items/{id} - Users can change the quantity of items in their cart.
+- **DELETE**: /api/cart/cart-items/{id} - Users can remove items from their cart.
 ### Order
-- 🟨 **GET**: /api/orders - View Orders History: Users can view their order history.
-- 🟨 **GET**: /api/orders/{id}/items - View Order Items: Users can see all items in a specific order.
-- 🟨 **GET**: /api/orders/{orderId}/items/{itemId} - View Specific Order Item: Users can get details of a particular item within an order.
-- 🟨 **POST**: /api/orders - Place Order: Users can place an order for books in their cart.
-- 🟥 **PATCH**: /api/orders/{id} - Update Order Status: Admins can update the status of orders.
+
+Only for logged users:
+- **GET**: /api/orders - Users can view their order history.
+- **GET**: /api/orders/{id}/items - Users can see all items in a specific order.
+- **GET**: /api/orders/{orderId}/items/{itemId} - Users can get details of a particular item within an order.
+- **POST**: /api/orders - Users can place an order for books in their cart.
+
+Only for the administrator:
+- **PATCH**: /api/orders/{id} - Admins can update the status of orders.
 
 ## SQL Database Diagram
 Below is a representation of the database used in the project:

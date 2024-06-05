@@ -31,15 +31,16 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get all books", description = "Get a list of all available books")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get all books", description = "Get a list of all available books from DB")
     public List<BookDtoWithoutCategoryIds> getAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get a book by ID", description = "Get a book by ID")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get a book by ID", description = "Get all details of a specific book "
+            + "by providing its ID")
     public BookDtoWithoutCategoryIds getBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
@@ -47,21 +48,23 @@ public class BookController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new book", description = "Create a new book")
+    @Operation(summary = "Create a new book", description = "Create a new book by providing "
+            + "its title, author, isbn, price, description, cover image and category ID")
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto createBookRequestDto) {
         return bookService.save(createBookRequestDto);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Update a book by ID", description = "Update a book by ID")
+    @Operation(summary = "Update a book by ID", description = "Update a book with given ID "
+            + "by providing its title, author, isbn, price, description, cover image and category ID")
     public BookDto updateBookById(@PathVariable Long id,
                                   @RequestBody @Valid CreateBookRequestDto createBookRequestDto) {
         return bookService.updateById(id, createBookRequestDto);
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Search books by parameters",
             description = "Get a list of books by given parameters: "
                     + "author, title, isbn, minPrice, maxPrice")
@@ -73,7 +76,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Delete a book by ID", description = "Delete a book by ID")
+    @Operation(summary = "Delete a book", description = "Remove a book by its ID from DB")
     public void delete(@PathVariable Long id) {
         bookService.deleteById(id);
     }

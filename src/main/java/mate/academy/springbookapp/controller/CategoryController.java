@@ -34,29 +34,32 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Create a new category", description = "Create a new category")
+    @Operation(summary = "Create a new category", description = "Create a new category by providing "
+            + "its name and description")
     public CategoryDto createCategory(
             @RequestBody @Valid CreateCategoryRequestDto createCategoryRequestDto) {
         return categoryService.save(createCategoryRequestDto);
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get all categories", description = "Get a list of all categories")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get all categories", description = "Get a list of all available categories from DB")
     public List<CategoryDto> getAll(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
-    @Operation(summary = "Get a category by ID", description = "Get a category by ID")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get a category by ID", description = "Get all details of a specific category "
+            + "by providing its ID")
     public CategoryDto getCategoryById(@PathVariable Long id) {
         return categoryService.getById(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Update a category by ID", description = "Update a category by ID")
+    @Operation(summary = "Update a category by ID", description = "Update a category with given ID "
+            + "by providing its name and description")
     public CategoryDto updateCategory(@PathVariable Long id,
                                       @RequestBody @Valid CreateCategoryRequestDto
                                               createCategoryRequestDto) {
@@ -66,15 +69,15 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Delete a category by ID", description = "Delete a category by ID")
+    @Operation(summary = "Delete a category by ID", description = "Remove a category by its ID from DB")
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
     }
 
     @GetMapping("/{id}/books")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get books by category ID",
-            description = "Get a list of books from a category with specific ID")
+            description = "Get a list of all books from a category of a specific ID")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id,
                                                                 Pageable pageable) {
         return bookService.findAllByCategoryId(id, pageable);

@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -46,7 +47,8 @@ public class Order {
     @Column(name = "total", nullable = false)
     private BigDecimal total;
     @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime orderDate;
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

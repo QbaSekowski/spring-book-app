@@ -34,8 +34,8 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Create a new category", description = "Create a new category by providing "
-            + "its name and description")
+    @Operation(summary = "Create a new category",
+            description = "Create a new category by providing its name and description")
     public CategoryDto createCategory(
             @RequestBody @Valid CreateCategoryRequestDto createCategoryRequestDto) {
         return categoryService.save(createCategoryRequestDto);
@@ -43,15 +43,16 @@ public class CategoryController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get all categories", description = "Get a list of all available categories from DB")
+    @Operation(summary = "Get all categories",
+            description = "Get a list of all available categories from DB")
     public List<CategoryDto> getAll(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get a category by ID", description = "Get all details of a specific category "
-            + "by providing its ID")
+    @Operation(summary = "Get a category by ID",
+            description = "Get all details of a specific category by providing its ID")
     public CategoryDto getCategoryById(@PathVariable Long id) {
         return categoryService.getById(id);
     }
@@ -69,7 +70,8 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Delete a category by ID", description = "Remove a category by its ID from DB")
+    @Operation(summary = "Delete a category by ID",
+            description = "Remove a category by its ID from DB")
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
     }
